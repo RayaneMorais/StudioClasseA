@@ -3,13 +3,24 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Sistema Classe A - API specification
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Authentication
+  - name: turmas
+    description: Ballet class management
+  - name: alunos
+    description: Student management
+  - name: mensalidades
+    description: Monthly payment management
+  - name: dashboard
+    description: Dashboard statistics
+
 paths:
   /healthz:
     get:
@@ -24,6 +35,412 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Login with email and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginInput"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthUser"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      summary: Logout current session
+      responses:
+        "200":
+          description: Logged out successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current authenticated user
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthUser"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /turmas:
+    get:
+      operationId: listTurmas
+      tags: [turmas]
+      summary: List all turmas
+      responses:
+        "200":
+          description: List of turmas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Turma"
+    post:
+      operationId: createTurma
+      tags: [turmas]
+      summary: Create a new turma
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TurmaInput"
+      responses:
+        "201":
+          description: Created turma
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Turma"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /turmas/{id}:
+    get:
+      operationId: getTurma
+      tags: [turmas]
+      summary: Get a turma by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Turma found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Turma"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      operationId: updateTurma
+      tags: [turmas]
+      summary: Update a turma
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TurmaUpdate"
+      responses:
+        "200":
+          description: Updated turma
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Turma"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /alunos:
+    get:
+      operationId: listAlunos
+      tags: [alunos]
+      summary: List all alunos
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [Ativo, Inativo]
+        - name: turmaId
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of alunos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Aluno"
+    post:
+      operationId: createAluno
+      tags: [alunos]
+      summary: Create a new aluno
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AlunoInput"
+      responses:
+        "201":
+          description: Created aluno
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Aluno"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /alunos/{id}:
+    get:
+      operationId: getAluno
+      tags: [alunos]
+      summary: Get an aluno by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Aluno found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Aluno"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      operationId: updateAluno
+      tags: [alunos]
+      summary: Update an aluno (status, turma, etc)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AlunoUpdate"
+      responses:
+        "200":
+          description: Updated aluno
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Aluno"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /mensalidades:
+    get:
+      operationId: listMensalidades
+      tags: [mensalidades]
+      summary: List mensalidades with optional filters
+      parameters:
+        - name: alunoId
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: mes
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: ano
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [Pendente, Pago]
+      responses:
+        "200":
+          description: List of mensalidades
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Mensalidade"
+    post:
+      operationId: createMensalidade
+      tags: [mensalidades]
+      summary: Create a single mensalidade
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MensalidadeInput"
+      responses:
+        "201":
+          description: Created mensalidade
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Mensalidade"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /mensalidades/gerar-em-massa:
+    post:
+      operationId: gerarMensalidadesEmMassa
+      tags: [mensalidades]
+      summary: Gerar mensalidades em massa para todos os alunos ativos em um mês/ano
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GerarEmMassaInput"
+      responses:
+        "200":
+          description: Mensalidades geradas
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GerarEmMassaResult"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /mensalidades/{id}:
+    get:
+      operationId: getMensalidade
+      tags: [mensalidades]
+      summary: Get a mensalidade by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Mensalidade found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Mensalidade"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      operationId: updateMensalidade
+      tags: [mensalidades]
+      summary: Update a mensalidade (mark as paid, change value, etc)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MensalidadeUpdate"
+      responses:
+        "200":
+          description: Updated mensalidade
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Mensalidade"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /dashboard/stats:
+    get:
+      operationId: getDashboardStats
+      tags: [dashboard]
+      summary: Get dashboard statistics
+      responses:
+        "200":
+          description: Dashboard statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardStats"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +451,272 @@ components:
       required:
         - status
 
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+      required:
+        - success
+
+    LoginInput:
+      type: object
+      required: [email, senha]
+      properties:
+        email:
+          type: string
+          format: email
+        senha:
+          type: string
+
+    AuthUser:
+      type: object
+      required: [id, email, nome]
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        nome:
+          type: string
+
+    Turma:
+      type: object
+      required: [id, nome, professor, diasSemana, horario, descricao, status]
+      properties:
+        id:
+          type: integer
+        nome:
+          type: string
+        professor:
+          type: string
+        diasSemana:
+          type: string
+        horario:
+          type: string
+        descricao:
+          type: string
+        status:
+          type: string
+          enum: [Ativa, Suspensa, Fechada]
+        createdAt:
+          type: string
+          format: date-time
+
+    TurmaInput:
+      type: object
+      required: [nome, professor, diasSemana, horario, status]
+      properties:
+        nome:
+          type: string
+          minLength: 1
+        professor:
+          type: string
+          minLength: 1
+        diasSemana:
+          type: string
+          minLength: 1
+        horario:
+          type: string
+          minLength: 1
+        status:
+          type: string
+          enum: [Ativa, Suspensa, Fechada]
+
+    TurmaUpdate:
+      type: object
+      properties:
+        nome:
+          type: string
+          minLength: 1
+        professor:
+          type: string
+          minLength: 1
+        diasSemana:
+          type: string
+          minLength: 1
+        horario:
+          type: string
+          minLength: 1
+        status:
+          type: string
+          enum: [Ativa, Suspensa, Fechada]
+
+    Aluno:
+      type: object
+      required: [id, nome, dataNascimento, nomeResponsavel, telefoneResponsavel, turmaId, turmaDescricao, status]
+      properties:
+        id:
+          type: integer
+        nome:
+          type: string
+        dataNascimento:
+          type: string
+          format: date
+        nomeResponsavel:
+          type: string
+        telefoneResponsavel:
+          type: string
+        turmaId:
+          type: integer
+        turmaDescricao:
+          type: string
+        status:
+          type: string
+          enum: [Ativo, Inativo]
+        createdAt:
+          type: string
+          format: date-time
+
+    AlunoInput:
+      type: object
+      required: [nome, dataNascimento, nomeResponsavel, telefoneResponsavel, turmaId]
+      properties:
+        nome:
+          type: string
+          minLength: 1
+        dataNascimento:
+          type: string
+          format: date
+        nomeResponsavel:
+          type: string
+          minLength: 1
+        telefoneResponsavel:
+          type: string
+          minLength: 1
+        turmaId:
+          type: integer
+
+    AlunoUpdate:
+      type: object
+      properties:
+        nome:
+          type: string
+          minLength: 1
+        dataNascimento:
+          type: string
+          format: date
+        nomeResponsavel:
+          type: string
+          minLength: 1
+        telefoneResponsavel:
+          type: string
+          minLength: 1
+        turmaId:
+          type: integer
+        status:
+          type: string
+          enum: [Ativo, Inativo]
+
+    Mensalidade:
+      type: object
+      required: [id, alunoId, alunoNome, mes, ano, vencimento, status, tipo]
+      properties:
+        id:
+          type: integer
+        alunoId:
+          type: integer
+        alunoNome:
+          type: string
+        mes:
+          type: integer
+        ano:
+          type: integer
+        vencimento:
+          type: string
+          format: date
+        status:
+          type: string
+          enum: [Pendente, Pago]
+        tipo:
+          type: string
+          enum: [Mensalidade, Matricula, RoupaDeBalett, Outros]
+        valor:
+          type: ["number", "null"]
+        dataPagamento:
+          type: ["string", "null"]
+          format: date
+
+    MensalidadeInput:
+      type: object
+      required: [alunoId, mes, ano, tipo]
+      properties:
+        alunoId:
+          type: integer
+        mes:
+          type: integer
+          minimum: 1
+          maximum: 12
+        ano:
+          type: integer
+        tipo:
+          type: string
+          enum: [Mensalidade, Matricula, RoupaDeBalett, Outros]
+        valor:
+          type: ["number", "null"]
+        status:
+          type: string
+          enum: [Pendente, Pago]
+        dataPagamento:
+          type: ["string", "null"]
+          format: date
+
+    MensalidadeUpdate:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [Pendente, Pago]
+        valor:
+          type: ["number", "null"]
+        dataPagamento:
+          type: ["string", "null"]
+          format: date
+        tipo:
+          type: string
+          enum: [Mensalidade, Matricula, RoupaDeBalett, Outros]
+
+    GerarEmMassaInput:
+      type: object
+      required: [mes, ano]
+      properties:
+        mes:
+          type: integer
+          minimum: 1
+          maximum: 12
+        ano:
+          type: integer
+
+    GerarEmMassaResult:
+      type: object
+      required: [criadas, ignoradas]
+      properties:
+        criadas:
+          type: integer
+        ignoradas:
+          type: integer
+        mensagem:
+          type: string
+
+    DashboardStats:
+      type: object
+      required: [totalAlunosAtivos, mensalidadesPendentes, mensalidadesPagasNoMes, totalTurmasAtivas]
+      properties:
+        totalAlunosAtivos:
+          type: integer
+        mensalidadesPendentes:
+          type: integer
+        mensalidadesPagasNoMes:
+          type: integer
+        totalTurmasAtivas:
+          type: integer
+        valorTotalPagoNoMes:
+          type: ["number", "null"]

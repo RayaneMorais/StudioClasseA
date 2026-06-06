@@ -1,0 +1,110 @@
+Crie um sistema web completo chamado “Sistema Classe A”.
+
+Objetivo:
+Sistema interno para uma escola de ballet com controle de alunos, turmas e pagamentos mensais.
+
+Requisitos gerais:
+- Aplicação web simples e funcional
+- Interface em português (Brasil)
+- Cores principais: rosa, branco e preto (layout simples e limpo)
+- Sistema de acesso apenas interno (sem registro público)
+- Login obrigatório com e-mail e senha
+- Sem funcionalidade de “esqueci senha”
+- Somente usuários criados manualmente podem acessar
+- Banco de dados já configurado e funcional
+
+---
+
+FUNCIONALIDADES:
+
+1. LOGIN
+- Autenticação com email e senha
+- Usuário precisa estar cadastrado manualmente
+- Sessão protegida (não acessa sistema sem login)
+
+---
+
+2. CADASTRO DE TURMAS
+Campos:
+- nome da turma
+- professor
+- dias da semana
+- horário
+- descrição com concatenação dos dados acima
+- status (Ativa, Suspensa, Fechada)
+
+Regras:
+- não precisa deletar turma
+- apenas editar e visualizar
+
+---
+
+3. CADASTRO DE ALUNOS
+Campos obrigatórios:
+- nome do aluno
+- data de nascimento
+- nome do responsável
+- telefone do responsável
+- turma (relacionamento com tabela Turma) - visualiza a coluna descrição
+- status do aluno: Ativo ou Inativo
+
+Regras:
+- não deletar alunos
+- apenas alterar status para Inativo quando necessário
+
+---
+
+4. CONTROLE DE MENSALIDADES
+
+Cada aluno deve ter controle financeiro mensal.
+
+Campos:
+- aluno (relacionamento)
+- mês/ano de referência
+- vencimento fixo todo dia 10 de cada mês
+- status: Pendente ou Pago
+- tipo de cobrança: Mensalidade, Matrícula, Roupa de ballet, Outros
+- valor (opcional)
+- data de pagamento (opcional)
+
+Regras importantes:
+- todo mês deve existir uma mensalidade por aluno (pode ser manual ou botão para gerar em massa)
+- vencimento padrão sempre dia 10
+- permitir marcar como pago ou pendente
+
+---
+
+5. DASHBOARD INICIAL
+Mostrar:
+- total de alunos ativos
+- mensalidades pendentes
+- mensalidades pagas no mês atual
+
+---
+
+6. REGRAS DO SISTEMA
+- Não permitir exclusão de alunos ou turmas
+- Apenas inativação de alunos
+- Interface simples e funcional (sem excesso de design)
+- Sistema deve ser fácil de usar para equipe não técnica
+
+---
+
+7. TECNOLOGIA
+- Usar framework web com banco de dados integrado
+- Criar migrations automaticamente
+- Criar painel administrativo simples para gerenciamento
+- Sistema deve rodar localmente ou no Replit sem configurações complexas
+
+---
+
+8. ENTREGÁVEL
+Quero que o sistema já venha:
+- funcional
+- com banco de dados configurado
+- com login funcionando
+- com telas básicas prontas
+- com modelos já criados
+- com dados estruturados corretamente
+
+Nome do sistema na interface: Sistema Classe A
