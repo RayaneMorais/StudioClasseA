@@ -36,12 +36,12 @@ export default function Alunos() {
   const queryClient = useQueryClient();
   const [, setLocation] = useLocation();
 
-  const [filtroStatus, setFiltroStatus] = useState<"" | "Ativo" | "Inativo">("");
-  const [filtroTurma, setFiltroTurma] = useState<string>("");
+  const [filtroStatus, setFiltroStatus] = useState<"all" | "Ativo" | "Inativo">("all");
+  const [filtroTurma, setFiltroTurma] = useState<string>("all");
 
   const params: Record<string, string | number> = {};
-  if (filtroStatus) params.status = filtroStatus;
-  if (filtroTurma) params.turmaId = Number(filtroTurma);
+  if (filtroStatus !== "all") params.status = filtroStatus;
+  if (filtroTurma !== "all") params.turmaId = Number(filtroTurma);
 
   const { data: alunos = [], isLoading } = useListAlunos(
     Object.keys(params).length > 0 ? params : undefined
@@ -165,12 +165,12 @@ export default function Alunos() {
         </div>
 
         <div className="flex gap-3 mb-6">
-          <Select value={filtroStatus} onValueChange={(v) => setFiltroStatus(v as "" | "Ativo" | "Inativo")}>
+          <Select value={filtroStatus} onValueChange={(v) => setFiltroStatus(v as "all" | "Ativo" | "Inativo")}>
             <SelectTrigger className="w-40">
               <SelectValue placeholder="Todos os status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Todos os status</SelectItem>
+              <SelectItem value="all">Todos os status</SelectItem>
               <SelectItem value="Ativo">Ativo</SelectItem>
               <SelectItem value="Inativo">Inativo</SelectItem>
             </SelectContent>
@@ -180,7 +180,7 @@ export default function Alunos() {
               <SelectValue placeholder="Todas as turmas" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Todas as turmas</SelectItem>
+              <SelectItem value="all">Todas as turmas</SelectItem>
               {turmas.map((t) => (
                 <SelectItem key={t.id} value={String(t.id)}>
                   {t.nome}

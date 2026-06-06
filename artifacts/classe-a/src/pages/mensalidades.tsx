@@ -57,12 +57,12 @@ export default function Mensalidades() {
 
   const [filtroMes, setFiltroMes] = useState(String(now.getMonth() + 1));
   const [filtroAno, setFiltroAno] = useState(String(now.getFullYear()));
-  const [filtroStatus, setFiltroStatus] = useState("");
+  const [filtroStatus, setFiltroStatus] = useState("all");
 
   const params: Record<string, string | number> = {};
   if (filtroMes) params.mes = Number(filtroMes);
   if (filtroAno) params.ano = Number(filtroAno);
-  if (filtroStatus) params.status = filtroStatus;
+  if (filtroStatus !== "all") params.status = filtroStatus;
 
   const { data: mensalidades = [], isLoading } = useListMensalidades(params);
   const { data: alunos = [] } = useListAlunos({ status: "Ativo" });
@@ -340,7 +340,7 @@ export default function Mensalidades() {
               <SelectValue placeholder="Todos status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Todos status</SelectItem>
+              <SelectItem value="all">Todos status</SelectItem>
               <SelectItem value="Pendente">Pendente</SelectItem>
               <SelectItem value="Pago">Pago</SelectItem>
             </SelectContent>
