@@ -249,6 +249,8 @@ export interface GerarEmMassaInput {
      */
   mes: number;
   ano: number;
+  /** @nullable */
+  valor?: number | null;
 }
 
 export interface GerarEmMassaResult {

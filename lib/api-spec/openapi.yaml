@@ -708,6 +708,8 @@ components:
           maximum: 12
         ano:
           type: integer
+        valor:
+          type: ["number", "null"]
 
     GerarEmMassaResult:
       type: object

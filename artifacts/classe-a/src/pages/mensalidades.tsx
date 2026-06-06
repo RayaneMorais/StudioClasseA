@@ -90,6 +90,7 @@ export default function Mensalidades() {
   const [massaForm, setMassaForm] = useState({
     mes: now.getMonth() + 1,
     ano: now.getFullYear(),
+    valor: "",
   });
 
   const handleToggleStatus = (id: number, currentStatus: string) => {
@@ -132,7 +133,7 @@ export default function Mensalidades() {
   const handleGerarEmMassa = (e: React.FormEvent) => {
     e.preventDefault();
     gerarEmMassa.mutate(
-      { data: { mes: massaForm.mes, ano: massaForm.ano } },
+      { data: { mes: massaForm.mes, ano: massaForm.ano, valor: massaForm.valor ? Number(massaForm.valor) : null } },
       {
         onSuccess: (result) => {
           queryClient.invalidateQueries({ queryKey: getListMensalidadesQueryKey() });
@@ -172,6 +173,18 @@ export default function Mensalidades() {
                   <p className="text-sm text-gray-600">
                     Gera mensalidades para todos os alunos ativos no mês/ano selecionado (ignora duplicatas).
                   </p>
+                  <div className="space-y-2">
+                    <Label>Valor da Mensalidade (R$)</Label>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      placeholder="Ex: 150,00"
+                      value={massaForm.valor}
+                      onChange={(e) => setMassaForm({ ...massaForm, valor: e.target.value })}
+                      required
+                    />
+                  </div>
                   <div className="space-y-2">
                     <Label>Mês</Label>
                     <Select

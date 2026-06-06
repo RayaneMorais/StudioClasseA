@@ -286,7 +286,8 @@ export const gerarMensalidadesEmMassaBodyMesMax = 12;
 
 export const GerarMensalidadesEmMassaBody = zod.object({
   "mes": zod.number().min(1).max(gerarMensalidadesEmMassaBodyMesMax),
-  "ano": zod.number()
+  "ano": zod.number(),
+  "valor": zod.number().nullish()
 })
 
 export const GerarMensalidadesEmMassaResponse = zod.object({

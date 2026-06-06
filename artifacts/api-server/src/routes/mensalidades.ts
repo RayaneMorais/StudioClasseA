@@ -91,7 +91,7 @@ router.post("/mensalidades", async (req, res) => {
 });
 
 router.post("/mensalidades/gerar-em-massa", async (req, res) => {
-  const { mes, ano } = req.body;
+  const { mes, ano, valor } = req.body;
   if (!mes || !ano) {
     return res.status(400).json({ error: "Mês e ano são obrigatórios" });
   }
@@ -129,6 +129,7 @@ router.post("/mensalidades/gerar-em-massa", async (req, res) => {
         vencimento,
         tipo: "Mensalidade",
         status: "Pendente",
+        ...(valor !== undefined && valor !== null && valor !== "" ? { valor: String(valor) } : {}),
       });
       criadas++;
     }
