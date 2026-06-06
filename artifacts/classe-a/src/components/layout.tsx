@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { Users, GraduationCap, CreditCard, LogOut, LayoutDashboard } from "lucide-react";
+import { Users, GraduationCap, CreditCard, LogOut, LayoutDashboard, Receipt } from "lucide-react";
 import { useLogout, useGetMe } from "@workspace/api-client-react";
 import { Button } from "./ui/button";
 
@@ -19,6 +19,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
     { href: "/turmas", label: "Turmas", icon: GraduationCap },
     { href: "/alunos", label: "Alunos", icon: Users },
     { href: "/mensalidades", label: "Mensalidades", icon: CreditCard },
+    { href: "/cobranças", label: "Cobranças", icon: Receipt },
   ];
 
   return (

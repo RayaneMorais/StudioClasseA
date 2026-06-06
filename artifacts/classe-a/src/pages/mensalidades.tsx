@@ -62,7 +62,7 @@ export default function Mensalidades() {
   const [filtroAno, setFiltroAno] = useState(String(now.getFullYear()));
   const [filtroStatus, setFiltroStatus] = useState("all");
 
-  const params: Record<string, string | number> = {};
+  const params: Record<string, string | number> = { tipo: "Mensalidade" };
   if (filtroMes) params.mes = Number(filtroMes);
   if (filtroAno) params.ano = Number(filtroAno);
   if (filtroStatus !== "all") params.status = filtroStatus;

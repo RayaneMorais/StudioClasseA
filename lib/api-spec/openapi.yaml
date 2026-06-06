@@ -316,6 +316,12 @@ paths:
           schema:
             type: string
             enum: [Pendente, Pago]
+        - name: tipo
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [Mensalidade, Matricula, RoupaDeBalett, Outros]
       responses:
         "200":
           description: List of mensalidades
@@ -643,6 +649,8 @@ components:
           enum: [Mensalidade, Matricula, RoupaDeBalett, Outros]
         valor:
           type: ["number", "null"]
+        descricao:
+          type: ["string", "null"]
         dataPagamento:
           type: ["string", "null"]
           format: date
@@ -664,6 +672,8 @@ components:
           enum: [Mensalidade, Matricula, RoupaDeBalett, Outros]
         valor:
           type: ["number", "null"]
+        descricao:
+          type: ["string", "null"]
         status:
           type: string
           enum: [Pendente, Pago]
@@ -679,6 +689,8 @@ components:
           enum: [Pendente, Pago]
         valor:
           type: ["number", "null"]
+        descricao:
+          type: ["string", "null"]
         dataPagamento:
           type: ["string", "null"]
           format: date

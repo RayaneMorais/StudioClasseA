@@ -238,7 +238,8 @@ export const ListMensalidadesQueryParams = zod.object({
   "alunoId": zod.coerce.number().optional(),
   "mes": zod.coerce.number().optional(),
   "ano": zod.coerce.number().optional(),
-  "status": zod.enum(['Pendente', 'Pago']).optional()
+  "status": zod.enum(['Pendente', 'Pago']).optional(),
+  "tipo": zod.enum(['Mensalidade', 'Matricula', 'RoupaDeBalett', 'Outros']).optional()
 })
 
 export const ListMensalidadesResponseItem = zod.object({
@@ -251,6 +252,7 @@ export const ListMensalidadesResponseItem = zod.object({
   "status": zod.enum(['Pendente', 'Pago']),
   "tipo": zod.enum(['Mensalidade', 'Matricula', 'RoupaDeBalett', 'Outros']),
   "valor": zod.number().nullish(),
+  "descricao": zod.string().nullish(),
   "dataPagamento": zod.coerce.date().nullish()
 })
 export const ListMensalidadesResponse = zod.array(ListMensalidadesResponseItem)
@@ -269,6 +271,7 @@ export const CreateMensalidadeBody = zod.object({
   "ano": zod.number(),
   "tipo": zod.enum(['Mensalidade', 'Matricula', 'RoupaDeBalett', 'Outros']),
   "valor": zod.number().nullish(),
+  "descricao": zod.string().nullish(),
   "status": zod.enum(['Pendente', 'Pago']).optional(),
   "dataPagamento": zod.coerce.date().nullish()
 })
@@ -310,6 +313,7 @@ export const GetMensalidadeResponse = zod.object({
   "status": zod.enum(['Pendente', 'Pago']),
   "tipo": zod.enum(['Mensalidade', 'Matricula', 'RoupaDeBalett', 'Outros']),
   "valor": zod.number().nullish(),
+  "descricao": zod.string().nullish(),
   "dataPagamento": zod.coerce.date().nullish()
 })
 
@@ -324,6 +328,7 @@ export const UpdateMensalidadeParams = zod.object({
 export const UpdateMensalidadeBody = zod.object({
   "status": zod.enum(['Pendente', 'Pago']).optional(),
   "valor": zod.number().nullish(),
+  "descricao": zod.string().nullish(),
   "dataPagamento": zod.coerce.date().nullish(),
   "tipo": zod.enum(['Mensalidade', 'Matricula', 'RoupaDeBalett', 'Outros']).optional()
 })
@@ -338,6 +343,7 @@ export const UpdateMensalidadeResponse = zod.object({
   "status": zod.enum(['Pendente', 'Pago']),
   "tipo": zod.enum(['Mensalidade', 'Matricula', 'RoupaDeBalett', 'Outros']),
   "valor": zod.number().nullish(),
+  "descricao": zod.string().nullish(),
   "dataPagamento": zod.coerce.date().nullish()
 })
 

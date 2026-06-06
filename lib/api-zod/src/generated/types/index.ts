@@ -21,6 +21,7 @@ export * from './listAlunosParams';
 export * from './listAlunosStatus';
 export * from './listMensalidadesParams';
 export * from './listMensalidadesStatus';
+export * from './listMensalidadesTipo';
 export * from './loginInput';
 export * from './mensalidade';
 export * from './mensalidadeInput';

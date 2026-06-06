@@ -19,6 +19,8 @@ export interface MensalidadeInput {
   tipo: MensalidadeInputTipo;
   /** @nullable */
   valor?: number | null;
+  /** @nullable */
+  descricao?: string | null;
   status?: MensalidadeInputStatus;
   /** @nullable */
   dataPagamento?: Date | null;

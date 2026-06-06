@@ -6,10 +6,12 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { ListMensalidadesStatus } from './listMensalidadesStatus';
+import type { ListMensalidadesTipo } from './listMensalidadesTipo';
 
 export type ListMensalidadesParams = {
 alunoId?: number;
 mes?: number;
 ano?: number;
 status?: ListMensalidadesStatus;
+tipo?: ListMensalidadesTipo;
 };

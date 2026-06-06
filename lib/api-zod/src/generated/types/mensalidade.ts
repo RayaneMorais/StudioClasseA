@@ -20,5 +20,7 @@ export interface Mensalidade {
   /** @nullable */
   valor?: number | null;
   /** @nullable */
+  descricao?: string | null;
+  /** @nullable */
   dataPagamento?: Date | null;
 }

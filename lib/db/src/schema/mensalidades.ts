@@ -12,6 +12,7 @@ export const mensalidadesTable = pgTable("mensalidades", {
   status: text("status", { enum: ["Pendente", "Pago"] }).notNull().default("Pendente"),
   tipo: text("tipo", { enum: ["Mensalidade", "Matricula", "RoupaDeBalett", "Outros"] }).notNull().default("Mensalidade"),
   valor: numeric("valor", { precision: 10, scale: 2 }),
+  descricao: text("descricao"),
   dataPagamento: date("data_pagamento"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

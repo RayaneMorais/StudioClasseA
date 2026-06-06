@@ -13,6 +13,8 @@ export interface MensalidadeUpdate {
   /** @nullable */
   valor?: number | null;
   /** @nullable */
+  descricao?: string | null;
+  /** @nullable */
   dataPagamento?: Date | null;
   tipo?: MensalidadeUpdateTipo;
 }

@@ -10,7 +10,7 @@ function buildVencimento(mes: number, ano: number): string {
 }
 
 router.get("/mensalidades", async (req, res) => {
-  const { alunoId, mes, ano, status } = req.query;
+  const { alunoId, mes, ano, status, tipo } = req.query;
 
   const conditions: any[] = [];
   if (alunoId) conditions.push(eq(mensalidadesTable.alunoId, Number(alunoId)));
@@ -18,6 +18,9 @@ router.get("/mensalidades", async (req, res) => {
   if (ano) conditions.push(eq(mensalidadesTable.ano, Number(ano)));
   if (status && (status === "Pendente" || status === "Pago")) {
     conditions.push(eq(mensalidadesTable.status, status));
+  }
+  if (tipo && ["Mensalidade", "Matricula", "RoupaDeBalett", "Outros"].includes(tipo as string)) {
+    conditions.push(eq(mensalidadesTable.tipo, tipo as any));
   }
 
   const rows = await db
@@ -31,6 +34,7 @@ router.get("/mensalidades", async (req, res) => {
       status: mensalidadesTable.status,
       tipo: mensalidadesTable.tipo,
       valor: mensalidadesTable.valor,
+      descricao: mensalidadesTable.descricao,
       dataPagamento: mensalidadesTable.dataPagamento,
     })
     .from(mensalidadesTable)
@@ -42,7 +46,7 @@ router.get("/mensalidades", async (req, res) => {
 });
 
 router.post("/mensalidades", async (req, res) => {
-  const { alunoId, mes, ano, tipo, valor, status, dataPagamento } = req.body;
+  const { alunoId, mes, ano, tipo, valor, descricao, status, dataPagamento } = req.body;
   if (!alunoId || !mes || !ano || !tipo) {
     return res.status(400).json({ error: "Campos obrigatórios ausentes" });
   }
@@ -59,6 +63,7 @@ router.post("/mensalidades", async (req, res) => {
       tipo,
       status: status || "Pendente",
       ...(valor !== undefined && valor !== null && valor !== "" ? { valor: String(valor) } : {}),
+      ...(descricao ? { descricao } : {}),
       ...(dataPagamento ? { dataPagamento } : {}),
     })
     .returning();
@@ -74,6 +79,7 @@ router.post("/mensalidades", async (req, res) => {
       status: mensalidadesTable.status,
       tipo: mensalidadesTable.tipo,
       valor: mensalidadesTable.valor,
+      descricao: mensalidadesTable.descricao,
       dataPagamento: mensalidadesTable.dataPagamento,
     })
     .from(mensalidadesTable)
@@ -148,6 +154,7 @@ router.get("/mensalidades/:id", async (req, res) => {
       status: mensalidadesTable.status,
       tipo: mensalidadesTable.tipo,
       valor: mensalidadesTable.valor,
+      descricao: mensalidadesTable.descricao,
       dataPagamento: mensalidadesTable.dataPagamento,
     })
     .from(mensalidadesTable)
@@ -161,7 +168,7 @@ router.get("/mensalidades/:id", async (req, res) => {
 
 router.patch("/mensalidades/:id", async (req, res) => {
   const id = Number(req.params.id);
-  const { status, valor, dataPagamento, tipo } = req.body;
+  const { status, valor, dataPagamento, tipo, descricao } = req.body;
 
   const [existing] = await db.select().from(mensalidadesTable).where(eq(mensalidadesTable.id, id)).limit(1);
   if (!existing) return res.status(404).json({ error: "Mensalidade não encontrada" });
@@ -172,6 +179,7 @@ router.patch("/mensalidades/:id", async (req, res) => {
       ...(status && { status }),
       ...(tipo && { tipo }),
       ...(valor !== undefined ? { valor: valor !== null ? String(valor) : null } : {}),
+      ...(descricao !== undefined ? { descricao: descricao || null } : {}),
       ...(dataPagamento !== undefined ? { dataPagamento: dataPagamento || null } : {}),
     })
     .where(eq(mensalidadesTable.id, id));
@@ -187,6 +195,7 @@ router.patch("/mensalidades/:id", async (req, res) => {
       status: mensalidadesTable.status,
       tipo: mensalidadesTable.tipo,
       valor: mensalidadesTable.valor,
+      descricao: mensalidadesTable.descricao,
       dataPagamento: mensalidadesTable.dataPagamento,
     })
     .from(mensalidadesTable)

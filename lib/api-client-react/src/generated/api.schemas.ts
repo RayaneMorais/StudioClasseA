@@ -172,6 +172,8 @@ export interface Mensalidade {
   /** @nullable */
   valor?: number | null;
   /** @nullable */
+  descricao?: string | null;
+  /** @nullable */
   dataPagamento?: string | null;
 }
 
@@ -204,6 +206,8 @@ export interface MensalidadeInput {
   tipo: MensalidadeInputTipo;
   /** @nullable */
   valor?: number | null;
+  /** @nullable */
+  descricao?: string | null;
   status?: MensalidadeInputStatus;
   /** @nullable */
   dataPagamento?: string | null;
@@ -231,6 +235,8 @@ export interface MensalidadeUpdate {
   status?: MensalidadeUpdateStatus;
   /** @nullable */
   valor?: number | null;
+  /** @nullable */
+  descricao?: string | null;
   /** @nullable */
   dataPagamento?: string | null;
   tipo?: MensalidadeUpdateTipo;
@@ -278,6 +284,7 @@ alunoId?: number;
 mes?: number;
 ano?: number;
 status?: ListMensalidadesStatus;
+tipo?: ListMensalidadesTipo;
 };
 
 export type ListMensalidadesStatus = typeof ListMensalidadesStatus[keyof typeof ListMensalidadesStatus];
@@ -286,5 +293,15 @@ export type ListMensalidadesStatus = typeof ListMensalidadesStatus[keyof typeof 
 export const ListMensalidadesStatus = {
   Pendente: 'Pendente',
   Pago: 'Pago',
+} as const;
+
+export type ListMensalidadesTipo = typeof ListMensalidadesTipo[keyof typeof ListMensalidadesTipo];
+
+
+export const ListMensalidadesTipo = {
+  Mensalidade: 'Mensalidade',
+  Matricula: 'Matricula',
+  RoupaDeBalett: 'RoupaDeBalett',
+  Outros: 'Outros',
 } as const;
 

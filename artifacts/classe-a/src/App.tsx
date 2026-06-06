@@ -13,6 +13,7 @@ import TurmaDetalhe from "./pages/turma-detalhe";
 import Alunos from "./pages/alunos";
 import AlunoDetalhe from "./pages/aluno-detalhe";
 import Mensalidades from "./pages/mensalidades";
+import Cobranças from "./pages/cobranças";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -66,6 +67,9 @@ function Router() {
       </Route>
       <Route path="/mensalidades">
         <ProtectedRoute component={Mensalidades} />
+      </Route>
+      <Route path="/cobranças">
+        <ProtectedRoute component={Cobranças} />
       </Route>
       <Route path="/">
         <ProtectedRoute component={Dashboard} />
