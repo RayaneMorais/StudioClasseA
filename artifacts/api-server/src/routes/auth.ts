@@ -28,7 +28,7 @@ router.post("/auth/login", async (req, res) => {
 
   (req as any).session.userId = user.id;
 
-  return res.json({ id: user.id, email: user.email, nome: user.nome });
+  return res.json({ id: user.id, email: user.email, nome: user.nome, role: user.role });
 });
 
 router.post("/auth/logout", (req, res) => {
@@ -53,7 +53,7 @@ router.get("/auth/me", async (req, res) => {
     return res.status(401).json({ error: "Usuário não encontrado" });
   }
 
-  return res.json({ id: user.id, email: user.email, nome: user.nome });
+  return res.json({ id: user.id, email: user.email, nome: user.nome, role: user.role });
 });
 
 export default router;

@@ -5,6 +5,7 @@ import {
   useCreateMensalidade,
   useGerarMensalidadesEmMassa,
   useListAlunos,
+  useGetMe,
   getListMensalidadesQueryKey,
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -53,6 +54,8 @@ function formatDate(dateStr: string | null | undefined) {
 
 export default function Mensalidades() {
   const queryClient = useQueryClient();
+  const { data: me } = useGetMe();
+  const isAtendente = me?.role === "atendente";
   const now = new Date();
 
   const [filtroMes, setFiltroMes] = useState(String(now.getMonth() + 1));
@@ -363,7 +366,7 @@ export default function Mensalidades() {
                   <th className="text-left px-6 py-3 text-gray-500 font-medium">Mês/Ano</th>
                   <th className="text-left px-6 py-3 text-gray-500 font-medium">Tipo</th>
                   <th className="text-left px-6 py-3 text-gray-500 font-medium">Vencimento</th>
-                  <th className="text-left px-6 py-3 text-gray-500 font-medium">Valor</th>
+                  {!isAtendente && <th className="text-left px-6 py-3 text-gray-500 font-medium">Valor</th>}
                   <th className="text-left px-6 py-3 text-gray-500 font-medium">Pagamento</th>
                   <th className="text-left px-6 py-3 text-gray-500 font-medium">Status</th>
                   <th className="px-6 py-3" />
@@ -378,7 +381,7 @@ export default function Mensalidades() {
                     </td>
                     <td className="px-6 py-4 text-gray-600">{TIPOS_LABEL[m.tipo]}</td>
                     <td className="px-6 py-4 text-gray-600">{formatDate(m.vencimento)}</td>
-                    <td className="px-6 py-4 text-gray-600">{formatBRL(m.valor)}</td>
+                    {!isAtendente && <td className="px-6 py-4 text-gray-600">{formatBRL(m.valor)}</td>}
                     <td className="px-6 py-4 text-gray-600">{formatDate(m.dataPagamento)}</td>
                     <td className="px-6 py-4">
                       {m.status === "Pago" ? (

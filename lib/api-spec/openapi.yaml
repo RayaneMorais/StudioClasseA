@@ -479,13 +479,15 @@ components:
 
     AuthUser:
       type: object
-      required: [id, email, nome]
+      required: [id, email, nome, role]
       properties:
         id:
           type: integer
         email:
           type: string
         nome:
+          type: string
+        role:
           type: string
 
     Turma:

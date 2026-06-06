@@ -1,4 +1,4 @@
-import { useGetDashboardStats } from "@workspace/api-client-react";
+import { useGetDashboardStats, useGetMe } from "@workspace/api-client-react";
 import { Layout } from "@/components/layout";
 import { Users, CreditCard, CheckCircle, GraduationCap, TrendingUp } from "lucide-react";
 
@@ -36,6 +36,8 @@ function formatBRL(val: number | null | undefined) {
 
 export default function Dashboard() {
   const { data: stats, isLoading } = useGetDashboardStats();
+  const { data: me } = useGetMe();
+  const isAtendente = me?.role === "atendente";
 
   if (isLoading) {
     return (
@@ -86,13 +88,15 @@ export default function Dashboard() {
             iconClass="bg-green-100 text-green-600"
             sub="confirmadas"
           />
-          <StatCard
-            title="Receita do Mês"
-            value={formatBRL(stats.valorTotalPagoNoMes)}
-            icon={TrendingUp}
-            iconClass="bg-blue-100 text-blue-600"
-            sub="arrecadado"
-          />
+          {!isAtendente && (
+            <StatCard
+              title="Receita do Mês"
+              value={formatBRL(stats.valorTotalPagoNoMes)}
+              icon={TrendingUp}
+              iconClass="bg-blue-100 text-blue-600"
+              sub="arrecadado"
+            />
+          )}
         </div>
       </div>
     </Layout>

@@ -26,6 +26,7 @@ export interface AuthUser {
   id: number;
   email: string;
   nome: string;
+  role: string;
 }
 
 export type TurmaStatus = typeof TurmaStatus[keyof typeof TurmaStatus];
