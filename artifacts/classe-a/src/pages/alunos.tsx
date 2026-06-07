@@ -4,6 +4,7 @@ import {
   useCreateAluno,
   useListTurmas,
   getListAlunosQueryKey,
+  listAlunos,
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Layout } from "@/components/layout";
@@ -24,8 +25,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Pencil } from "lucide-react";
+import { Plus, Pencil, Download } from "lucide-react";
 import { useLocation } from "wouter";
+import * as XLSX from "xlsx";
 
 const statusColors: Record<string, string> = {
   Ativo: "bg-green-100 text-green-800",
@@ -79,6 +81,32 @@ export default function Alunos() {
     return `${day}/${month}/${year}`;
   };
 
+  const [exporting, setExporting] = useState(false);
+
+  const handleExport = async () => {
+    setExporting(true);
+    try {
+      const todos = await listAlunos();
+      const linhas = todos.map((a) => ({
+        "Nome": a.nome,
+        "Data de Nascimento": formatDate(a.dataNascimento),
+        "Responsável": a.nomeResponsavel,
+        "Telefone": a.telefoneResponsavel,
+        "Turma": a.turmaDescricao ?? "",
+        "Status": a.status,
+      }));
+      const ws = XLSX.utils.json_to_sheet(linhas);
+      ws["!cols"] = [
+        { wch: 30 }, { wch: 18 }, { wch: 30 }, { wch: 18 }, { wch: 30 }, { wch: 10 },
+      ];
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Alunos");
+      XLSX.writeFile(wb, `alunos_${new Date().toISOString().slice(0, 10)}.xlsx`);
+    } finally {
+      setExporting(false);
+    }
+  };
+
   return (
     <Layout>
       <div className="p-8 max-w-6xl mx-auto">
@@ -87,7 +115,12 @@ export default function Alunos() {
             <h1 className="text-2xl font-bold text-gray-900">Alunos</h1>
             <p className="text-sm text-gray-500 mt-1">Gerencie os alunos matriculados</p>
           </div>
-          <Dialog open={open} onOpenChange={setOpen}>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={handleExport} disabled={exporting}>
+              <Download className="w-4 h-4 mr-2" />
+              {exporting ? "Exportando..." : "Exportar Excel"}
+            </Button>
+            <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <Button>
                 <Plus className="w-4 h-4 mr-2" />
@@ -162,6 +195,7 @@ export default function Alunos() {
               </form>
             </DialogContent>
           </Dialog>
+          </div>
         </div>
 
         <div className="flex gap-3 mb-6">
