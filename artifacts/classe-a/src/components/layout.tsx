@@ -25,10 +25,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex h-screen bg-gray-50">
       <aside className="w-64 bg-white border-r border-gray-200 flex flex-col">
-        <div className="p-6 border-b border-gray-200 flex items-center justify-center">
-          <div className="text-xl font-semibold tracking-tight text-primary">
-            Sistema Classe A
-          </div>
+        <div className="pt-6 pb-4 px-4 border-b border-gray-200 flex flex-col items-center gap-1">
+          <img
+            src="/logo.png"
+            alt="Studio Classe A"
+            className="w-28 h-28 object-contain"
+          />
+          <p className="text-xs font-medium tracking-widest text-gray-400 uppercase">Studio Classe A</p>
         </div>
         
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
