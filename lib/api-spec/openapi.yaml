@@ -743,17 +743,23 @@ components:
       properties:
         totalAlunosAtivos:
           type: integer
+        totalTurmasAtivas:
+          type: integer
         mensalidadesPendentes:
           type: integer
         mensalidadesPagasNoMes:
           type: integer
-        totalTurmasAtivas:
-          type: integer
-        valorTotalPagoNoMes:
+        valorMensalidadesPendente:
           type: ["number", "null"]
-        valorTotalPendente:
+        valorCobrancasPendente:
           type: ["number", "null"]
-        taxaPagamentoMes:
+        valorMensalidadesPagas:
+          type: ["number", "null"]
+        valorCobrancasPagas:
+          type: ["number", "null"]
+        taxaMensalidades:
+          type: ["number", "null"]
+        taxaCobranças:
           type: ["number", "null"]
 
     ReceitaMensalItem:

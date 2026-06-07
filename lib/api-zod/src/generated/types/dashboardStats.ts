@@ -8,13 +8,19 @@
 
 export interface DashboardStats {
   totalAlunosAtivos: number;
+  totalTurmasAtivas: number;
   mensalidadesPendentes: number;
   mensalidadesPagasNoMes: number;
-  totalTurmasAtivas: number;
   /** @nullable */
-  valorTotalPagoNoMes?: number | null;
+  valorMensalidadesPendente?: number | null;
   /** @nullable */
-  valorTotalPendente?: number | null;
+  valorCobrancasPendente?: number | null;
   /** @nullable */
-  taxaPagamentoMes?: number | null;
+  valorMensalidadesPagas?: number | null;
+  /** @nullable */
+  valorCobrancasPagas?: number | null;
+  /** @nullable */
+  taxaMensalidades?: number | null;
+  /** @nullable */
+  taxaCobranças?: number | null;
 }

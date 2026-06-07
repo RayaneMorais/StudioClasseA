@@ -354,12 +354,15 @@ export const UpdateMensalidadeResponse = zod.object({
  */
 export const GetDashboardStatsResponse = zod.object({
   "totalAlunosAtivos": zod.number(),
+  "totalTurmasAtivas": zod.number(),
   "mensalidadesPendentes": zod.number(),
   "mensalidadesPagasNoMes": zod.number(),
-  "totalTurmasAtivas": zod.number(),
-  "valorTotalPagoNoMes": zod.number().nullish(),
-  "valorTotalPendente": zod.number().nullish(),
-  "taxaPagamentoMes": zod.number().nullish()
+  "valorMensalidadesPendente": zod.number().nullish(),
+  "valorCobrancasPendente": zod.number().nullish(),
+  "valorMensalidadesPagas": zod.number().nullish(),
+  "valorCobrancasPagas": zod.number().nullish(),
+  "taxaMensalidades": zod.number().nullish(),
+  "taxaCobranças": zod.number().nullish()
 })
 
 
