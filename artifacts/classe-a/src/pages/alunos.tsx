@@ -183,7 +183,7 @@ export default function Alunos() {
               <SelectItem value="all">Todas as turmas</SelectItem>
               {turmas.map((t) => (
                 <SelectItem key={t.id} value={String(t.id)}>
-                  {t.nome}
+                  {t.descricao}
                 </SelectItem>
               ))}
             </SelectContent>

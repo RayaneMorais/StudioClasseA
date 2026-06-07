@@ -159,6 +159,7 @@ export default function AlunoDetalhe() {
             <div className="space-y-2">
               <Label>Turma</Label>
               <Select
+                key={form.turmaId}
                 value={String(form.turmaId)}
                 onValueChange={(v) => setForm({ ...form, turmaId: Number(v) })}
               >
