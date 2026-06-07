@@ -357,7 +357,22 @@ export const GetDashboardStatsResponse = zod.object({
   "mensalidadesPendentes": zod.number(),
   "mensalidadesPagasNoMes": zod.number(),
   "totalTurmasAtivas": zod.number(),
-  "valorTotalPagoNoMes": zod.number().nullish()
+  "valorTotalPagoNoMes": zod.number().nullish(),
+  "valorTotalPendente": zod.number().nullish(),
+  "taxaPagamentoMes": zod.number().nullish()
 })
+
+
+/**
+ * @summary Get monthly revenue for the last 12 months
+ */
+export const GetReceitaMensalResponseItem = zod.object({
+  "mes": zod.number(),
+  "ano": zod.number(),
+  "label": zod.string(),
+  "receita": zod.number(),
+  "pendente": zod.number()
+})
+export const GetReceitaMensalResponse = zod.array(GetReceitaMensalResponseItem)
 
 

@@ -32,6 +32,7 @@ export * from './mensalidadeTipo';
 export * from './mensalidadeUpdate';
 export * from './mensalidadeUpdateStatus';
 export * from './mensalidadeUpdateTipo';
+export * from './receitaMensalItem';
 export * from './successResponse';
 export * from './turma';
 export * from './turmaInput';

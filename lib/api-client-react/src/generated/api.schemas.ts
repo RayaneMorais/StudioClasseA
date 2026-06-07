@@ -266,6 +266,18 @@ export interface DashboardStats {
   totalTurmasAtivas: number;
   /** @nullable */
   valorTotalPagoNoMes?: number | null;
+  /** @nullable */
+  valorTotalPendente?: number | null;
+  /** @nullable */
+  taxaPagamentoMes?: number | null;
+}
+
+export interface ReceitaMensalItem {
+  mes: number;
+  ano: number;
+  label: string;
+  receita: number;
+  pendente: number;
 }
 
 export type ListAlunosParams = {

@@ -35,6 +35,7 @@ import type {
   Mensalidade,
   MensalidadeInput,
   MensalidadeUpdate,
+  ReceitaMensalItem,
   SuccessResponse,
   Turma,
   TurmaInput,
@@ -1390,6 +1391,83 @@ export function useGetDashboardStats<TData = Awaited<ReturnType<typeof getDashbo
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
   const queryOptions = getGetDashboardStatsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetReceitaMensalUrl = () => {
+
+
+
+
+  return `/api/dashboard/receita-mensal`
+}
+
+/**
+ * @summary Get monthly revenue for the last 12 months
+ */
+export const getReceitaMensal = async ( options?: RequestInit): Promise<ReceitaMensalItem[]> => {
+
+  return customFetch<ReceitaMensalItem[]>(getGetReceitaMensalUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetReceitaMensalQueryKey = () => {
+    return [
+    `/api/dashboard/receita-mensal`
+    ] as const;
+    }
+
+
+export const getGetReceitaMensalQueryOptions = <TData = Awaited<ReturnType<typeof getReceitaMensal>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getReceitaMensal>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetReceitaMensalQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getReceitaMensal>>> = ({ signal }) => getReceitaMensal({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getReceitaMensal>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetReceitaMensalQueryResult = NonNullable<Awaited<ReturnType<typeof getReceitaMensal>>>
+export type GetReceitaMensalQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Get monthly revenue for the last 12 months
+ */
+
+export function useGetReceitaMensal<TData = Awaited<ReturnType<typeof getReceitaMensal>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getReceitaMensal>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetReceitaMensalQueryOptions(options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 

@@ -13,4 +13,8 @@ export interface DashboardStats {
   totalTurmasAtivas: number;
   /** @nullable */
   valorTotalPagoNoMes?: number | null;
+  /** @nullable */
+  valorTotalPendente?: number | null;
+  /** @nullable */
+  taxaPagamentoMes?: number | null;
 }
