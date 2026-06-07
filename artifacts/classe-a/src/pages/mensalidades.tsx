@@ -7,6 +7,7 @@ import {
   useListAlunos,
   useGetMe,
   getListMensalidadesQueryKey,
+  listMensalidades,
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Layout } from "@/components/layout";
@@ -27,7 +28,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, RefreshCw, CheckCircle, Clock } from "lucide-react";
+import { Plus, RefreshCw, CheckCircle, Clock, Download } from "lucide-react";
+import * as XLSX from "xlsx";
 
 const MESES = [
   "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
@@ -149,6 +151,32 @@ export default function Mensalidades() {
 
   const anos = Array.from({ length: 5 }, (_, i) => now.getFullYear() - 2 + i);
 
+  const [exporting, setExporting] = useState(false);
+
+  const handleExportPendentes = async () => {
+    setExporting(true);
+    try {
+      const pendentes = await listMensalidades({ status: "Pendente" });
+      const linhas = pendentes.map((m) => ({
+        "Aluno": m.alunoNome,
+        "Tipo": TIPOS_LABEL[m.tipo] ?? m.tipo,
+        "Mês": MESES[m.mes - 1] ?? "",
+        "Ano": m.ano,
+        "Vencimento": formatDate(m.vencimento),
+        "Valor": m.valor != null ? m.valor : "",
+      }));
+      const ws = XLSX.utils.json_to_sheet(linhas);
+      ws["!cols"] = [
+        { wch: 32 }, { wch: 16 }, { wch: 12 }, { wch: 8 }, { wch: 14 }, { wch: 12 },
+      ];
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Pendentes");
+      XLSX.writeFile(wb, `mensalidades_pendentes_${new Date().toISOString().slice(0, 10)}.xlsx`);
+    } finally {
+      setExporting(false);
+    }
+  };
+
   return (
     <Layout>
       <div className="p-8 max-w-7xl mx-auto">
@@ -158,6 +186,10 @@ export default function Mensalidades() {
             <p className="text-sm text-gray-500 mt-1">Controle financeiro mensal dos alunos</p>
           </div>
           <div className="flex gap-2">
+            <Button variant="outline" onClick={handleExportPendentes} disabled={exporting}>
+              <Download className="w-4 h-4 mr-2" />
+              {exporting ? "Exportando..." : "Exportar Pendentes"}
+            </Button>
             <Dialog open={openMassa} onOpenChange={setOpenMassa}>
               <DialogTrigger asChild>
                 <Button variant="outline">
