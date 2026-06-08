@@ -28,7 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, RefreshCw, CheckCircle, Clock, Download } from "lucide-react";
+import { Plus, RefreshCw, CheckCircle, Clock, Download, Pencil } from "lucide-react";
 import * as XLSX from "xlsx";
 
 const MESES = [
@@ -78,6 +78,21 @@ export default function Mensalidades() {
   const [openNova, setOpenNova] = useState(false);
   const [openMassa, setOpenMassa] = useState(false);
   const [massaMsg, setMassaMsg] = useState("");
+  const [editingValor, setEditingValor] = useState<{ id: number; valor: string } | null>(null);
+
+  const handleSaveValor = (id: number, valorStr: string) => {
+    const valorNum = valorStr.trim() === "" ? null : Number(valorStr.replace(",", "."));
+    updateMensalidade.mutate(
+      { id, data: { valor: valorNum } },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: getListMensalidadesQueryKey(params) });
+          setEditingValor(null);
+        },
+        onError: () => setEditingValor(null),
+      }
+    );
+  };
 
   const [form, setForm] = useState({
     alunoId: 0,
@@ -411,7 +426,7 @@ export default function Mensalidades() {
                   <th className="text-left px-6 py-3 text-gray-500 font-medium">Mês/Ano</th>
                   <th className="text-left px-6 py-3 text-gray-500 font-medium">Tipo</th>
                   <th className="text-left px-6 py-3 text-gray-500 font-medium">Vencimento</th>
-                  {!isAtendente && <th className="text-left px-6 py-3 text-gray-500 font-medium">Valor</th>}
+                  {!isAtendente && <th className="text-left px-6 py-3 text-gray-500 font-medium">Valor <span className="text-xs font-normal text-gray-400">(clique para editar)</span></th>}
                   <th className="text-left px-6 py-3 text-gray-500 font-medium">Pagamento</th>
                   <th className="text-left px-6 py-3 text-gray-500 font-medium">Status</th>
                   <th className="px-6 py-3" />
@@ -426,7 +441,34 @@ export default function Mensalidades() {
                     </td>
                     <td className="px-6 py-4 text-gray-600">{TIPOS_LABEL[m.tipo]}</td>
                     <td className="px-6 py-4 text-gray-600">{formatDate(m.vencimento)}</td>
-                    {!isAtendente && <td className="px-6 py-4 text-gray-600">{formatBRL(m.valor)}</td>}
+                    {!isAtendente && (
+                      <td className="px-4 py-3">
+                        {editingValor?.id === m.id ? (
+                          <Input
+                            autoFocus
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            className="w-28 h-8 text-sm"
+                            value={editingValor.valor}
+                            onChange={(e) => setEditingValor({ id: m.id, valor: e.target.value })}
+                            onBlur={() => handleSaveValor(m.id, editingValor.valor)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") handleSaveValor(m.id, editingValor.valor);
+                              if (e.key === "Escape") setEditingValor(null);
+                            }}
+                          />
+                        ) : (
+                          <button
+                            className="group flex items-center gap-1.5 text-gray-600 hover:text-primary transition-colors"
+                            onClick={() => setEditingValor({ id: m.id, valor: m.valor != null ? String(m.valor) : "" })}
+                          >
+                            <span>{formatBRL(m.valor)}</span>
+                            <Pencil className="w-3 h-3 opacity-0 group-hover:opacity-60 transition-opacity" />
+                          </button>
+                        )}
+                      </td>
+                    )}
                     <td className="px-6 py-4 text-gray-600">{formatDate(m.dataPagamento)}</td>
                     <td className="px-6 py-4">
                       {m.status === "Pago" ? (
