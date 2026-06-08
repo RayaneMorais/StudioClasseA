@@ -1,8 +1,9 @@
 #!/bin/bash
 set -e
 
-# Install pnpm to a writable temp location (Render has read-only /usr)
-npm install --prefix=/tmp/pnpm-setup pnpm
+# Install pnpm v9 to a writable temp location (Render has read-only /usr)
+# pnpm v9 respects onlyBuiltDependencies in package.json
+npm install --prefix=/tmp/pnpm-setup pnpm@9
 
 PNPM=/tmp/pnpm-setup/node_modules/.bin/pnpm
 
