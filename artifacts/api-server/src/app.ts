@@ -4,13 +4,20 @@ import pinoHttp from "pino-http";
 import session from "express-session";
 import cookieParser from "cookie-parser";
 import connectPgSimple from "connect-pg-simple";
+import path from "path";
+import fs from "fs";
 import router from "./routes";
 import { logger } from "./lib/logger";
 import { pool } from "@workspace/db";
 
 const PgSession = connectPgSimple(session);
+const isProd = process.env.NODE_ENV === "production";
 
 const app: Express = express();
+
+if (isProd) {
+  app.set("trust proxy", 1);
+}
 
 app.use(
   pinoHttp({
@@ -52,13 +59,24 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: false,
+      secure: isProd,
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
+      sameSite: isProd ? "lax" : false,
     },
   })
 );
 
 app.use("/api", router);
+
+if (isProd) {
+  const frontendDist = path.resolve(process.cwd(), "artifacts/classe-a/dist/public");
+  if (fs.existsSync(frontendDist)) {
+    app.use(express.static(frontendDist));
+    app.get("*", (_req, res) => {
+      res.sendFile(path.join(frontendDist, "index.html"));
+    });
+  }
+}
 
 export default app;
