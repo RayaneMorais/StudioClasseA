@@ -124,14 +124,13 @@ router.get("/dashboard/stats", async (req, res) => {
 
 router.get("/dashboard/receita-mensal", async (_req, res) => {
   const now = new Date();
-  const START_MES = 6;
-  const START_ANO = 2026;
-
   const result = [];
-  let ano = START_ANO;
-  let mes = START_MES;
 
-  while (ano < now.getFullYear() || (ano === now.getFullYear() && mes <= now.getMonth() + 1)) {
+  for (let i = 11; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const mes = d.getMonth() + 1;
+    const ano = d.getFullYear();
+
     const [mensalidadesPagas] = await db
       .select({ total: sql<number>`COALESCE(SUM(valor::numeric), 0)::float` })
       .from(mensalidadesTable)
@@ -161,9 +160,6 @@ router.get("/dashboard/receita-mensal", async (_req, res) => {
       receitaMensalidades: mensalidadesPagas.total,
       receitaCobranças: cobrancasPagas.total,
     });
-
-    mes++;
-    if (mes > 12) { mes = 1; ano++; }
   }
 
   return res.json(result);

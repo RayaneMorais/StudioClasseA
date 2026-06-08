@@ -199,7 +199,7 @@ export default function Dashboard() {
           <div className="bg-white rounded-xl border border-gray-200 p-6">
             <div className="flex items-center gap-2 mb-6">
               <TrendingUp className="w-5 h-5 text-primary" />
-              <h2 className="text-base font-semibold text-gray-900">Receita Mensal — a partir de Jun/26</h2>
+              <h2 className="text-base font-semibold text-gray-900">Receita Mensal — últimos 12 meses</h2>
             </div>
             {receitaMensal.length === 0 ? (
               <div className="h-48 flex items-center justify-center text-gray-400 text-sm">
