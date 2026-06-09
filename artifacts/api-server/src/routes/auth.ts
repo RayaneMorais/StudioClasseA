@@ -11,11 +11,23 @@ router.post("/auth/login", async (req, res) => {
     return res.status(400).json({ error: "Email e senha são obrigatórios" });
   }
 
-  const [user] = await db
-    .select()
-    .from(usersTable)
-    .where(eq(usersTable.email, email))
-    .limit(1);
+  let user;
+  try {
+    const result = await db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.email, email))
+      .limit(1);
+    user = result[0];
+  } catch (err: any) {
+    req.log.error({
+      msg: "DB query failed on login",
+      error: err?.message,
+      cause: err?.cause?.message ?? err?.cause,
+      code: err?.code ?? err?.cause?.code,
+    });
+    return res.status(500).json({ error: "Erro ao conectar ao banco de dados" });
+  }
 
   if (!user) {
     return res.status(401).json({ error: "Credenciais inválidas" });
