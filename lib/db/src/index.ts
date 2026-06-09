@@ -12,10 +12,19 @@ if (!raw) {
   );
 }
 
-// Remove channel_binding=require — not supported by the pg library version used
-const connectionString = raw.replace(/([&?])channel_binding=[^&]*/g, "$1").replace(/[?&]$/, "");
+// Strip unsupported params and normalize the connection string
+const connectionString = raw
+  .replace(/([&?])channel_binding=[^&]*/g, "$1")
+  .replace(/[?&]$/, "");
 
-export const pool = new Pool({ connectionString });
+// Neon requires explicit SSL config — sslmode in the URL alone is not enough
+// for all pg versions running on external hosts like Render
+const isNeon = connectionString.includes("neon.tech");
+
+export const pool = new Pool({
+  connectionString,
+  ...(isNeon ? { ssl: { rejectUnauthorized: false } } : {}),
+});
 export const db = drizzle(pool, { schema });
 
 export * from "./schema";
