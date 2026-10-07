@@ -72,7 +72,7 @@ export default function TurmaDetalhe() {
 
   return (
     <Layout>
-      <div className="p-8 max-w-2xl mx-auto">
+      <div className="mx-auto max-w-2xl p-4 sm:p-6 lg:p-8">
         <button
           onClick={() => setLocation("/turmas")}
           className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 mb-6 transition-colors"
@@ -81,7 +81,7 @@ export default function TurmaDetalhe() {
           Voltar para Turmas
         </button>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
+        <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
           <h1 className="text-xl font-bold text-gray-900 mb-6">Editar Turma</h1>
 
           <form onSubmit={handleSubmit} className="space-y-4">

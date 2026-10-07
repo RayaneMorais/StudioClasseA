@@ -90,7 +90,7 @@ export default function AlunoDetalhe() {
 
   return (
     <Layout>
-      <div className="p-8 max-w-2xl mx-auto">
+      <div className="mx-auto max-w-2xl p-4 sm:p-6 lg:p-8">
         <button
           onClick={() => setLocation("/alunos")}
           className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 mb-6 transition-colors"
@@ -99,14 +99,14 @@ export default function AlunoDetalhe() {
           Voltar para Alunos
         </button>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <div className="flex items-center justify-between mb-6">
+        <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+          <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <h1 className="text-xl font-bold text-gray-900">Editar Aluno</h1>
             {form.status === "Ativo" && (
               <Button
                 variant="outline"
                 size="sm"
-                className="text-red-600 border-red-200 hover:bg-red-50"
+                className="w-full border-red-200 text-red-600 hover:bg-red-50 sm:w-auto"
                 onClick={handleInativar}
                 disabled={updateAluno.isPending}
               >
@@ -144,6 +144,7 @@ export default function AlunoDetalhe() {
               <Label>Nome do Responsável</Label>
               <Input
                 value={form.nomeResponsavel}
+                autoComplete="name"
                 onChange={(e) => setForm({ ...form, nomeResponsavel: e.target.value })}
                 required
               />
@@ -151,7 +152,10 @@ export default function AlunoDetalhe() {
             <div className="space-y-2">
               <Label>Telefone do Responsável</Label>
               <Input
+                type="tel"
+                inputMode="tel"
                 value={form.telefoneResponsavel}
+                autoComplete="tel"
                 onChange={(e) => setForm({ ...form, telefoneResponsavel: e.target.value })}
                 required
               />

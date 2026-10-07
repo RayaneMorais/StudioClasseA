@@ -1,0 +1,229 @@
+Quero melhorar o projeto existente do **Studio de Dança Classe A**, deixando todo o sistema moderno, responsivo e principalmente **mobile-first**, para que possa ser utilizado de maneira fácil pelo celular.
+
+IMPORTANTE: o sistema já está funcionando e publicado em produção no Render. Portanto, trabalhe sobre o projeto existente e preserve integralmente as funcionalidades e regras atuais.
+
+ANTES DE ALTERAR:
+
+* Analise a estrutura atual do projeto, frontend, API, canvas, banco de dados, autenticação, rotas, componentes e regras de negócio.
+* Reutilize ao máximo a arquitetura, componentes e bibliotecas existentes.
+* Não recrie o sistema do zero.
+* Não altere banco de dados, PostgreSQL, APIs, autenticação, variáveis de ambiente ou regras de negócio sem necessidade.
+* Não exclua nenhuma funcionalidade existente.
+* Não altere dados existentes.
+* Não altere configurações de produção/Render.
+* Não faça deploy em produção.
+* O foco desta tarefa é FRONTEND, RESPONSIVIDADE e EXPERIÊNCIA MOBILE.
+
+### OBJETIVO
+
+Quero que todas as telas funcionem perfeitamente em:
+
+* Celulares Android
+* iPhone
+* Tablets
+* Desktop
+
+A versão desktop deve continuar funcionando normalmente.
+
+No celular, não quero simplesmente a versão desktop reduzida. Quero uma experiência realmente adaptada para telas pequenas, semelhante a um aplicativo.
+
+### IDENTIDADE VISUAL
+
+Preserve a identidade visual atual do Studio Classe A.
+
+Mantenha principalmente:
+
+* preto;
+* rosa;
+* branco;
+* tons neutros já utilizados.
+
+O resultado deve ser elegante, moderno, limpo e relacionado ao universo do ballet.
+
+Não quero alterar desnecessariamente o design que já funciona. Quero principalmente melhorar organização, responsividade e usabilidade.
+
+### NAVEGAÇÃO MOBILE
+
+Analise a navegação atual.
+
+No celular, implemente uma navegação confortável para toque.
+
+Caso seja adequado à arquitetura existente, utilize uma barra inferior fixa no estilo aplicativo com os principais acessos, por exemplo:
+
+Início | Alunas | Turmas | Pagamentos | Mais
+
+O item selecionado deve ficar destacado.
+
+Não permita que a barra inferior cubra botões ou informações das páginas.
+
+No desktop, mantenha a navegação atual se ela já funcionar adequadamente.
+
+### DASHBOARD
+
+Adapte o dashboard para celular.
+
+Os indicadores devem utilizar cards responsivos e reorganizar-se automaticamente de acordo com a largura da tela.
+
+Priorize informações importantes já existentes no sistema, como:
+
+* alunas;
+* turmas;
+* mensalidades;
+* pagamentos;
+* pendências;
+* recebimentos.
+
+Não invente informações que o sistema não possui atualmente.
+
+### ALUNAS
+
+Torne a consulta de alunas fácil pelo celular.
+
+Mantenha ou melhore a busca existente.
+
+No desktop, tabelas podem continuar sendo utilizadas.
+
+No celular, quando uma tabela não funcionar bem, apresente os registros como cards.
+
+Cada card deve mostrar somente as informações principais e permitir abrir os detalhes da aluna.
+
+### MATRÍCULA E FORMULÁRIOS
+
+Todos os formulários precisam funcionar confortavelmente pelo celular.
+
+No mobile:
+
+* utilizar preferencialmente uma coluna;
+* campos ocupando adequadamente a largura disponível;
+* labels legíveis;
+* espaçamento adequado;
+* botões grandes para toque;
+* teclado apropriado para telefone, e-mail, números etc.;
+* evitar scroll horizontal;
+* mensagens de validação legíveis;
+* manter todos os campos e regras existentes.
+
+Não alterar as regras atuais de matrícula.
+
+### TURMAS
+
+Adaptar a visualização de turmas para telas pequenas.
+
+No celular, utilizar cards se isso proporcionar uma experiência melhor do que tabelas.
+
+Preservar todas as informações e ações existentes.
+
+### PAGAMENTOS
+
+Esta é uma área importante.
+
+Quero que consultar e registrar pagamentos seja muito simples pelo celular.
+
+Deixe os status visualmente claros, mantendo as regras existentes, por exemplo:
+
+✓ Pago
+⚠ Pendente
+🔴 Atrasado
+
+Preserve totalmente a lógica atual de pagamentos.
+
+Se o sistema registra qual usuário realizou a baixa do pagamento, essa funcionalidade deve continuar funcionando exatamente como atualmente.
+
+### TABELAS
+
+Revise todas as tabelas existentes no sistema.
+
+No desktop, mantenha tabelas quando forem adequadas.
+
+No celular, quando houver muitas colunas, prefira cards ou outra apresentação responsiva em vez de obrigar o usuário a fazer scroll horizontal excessivo.
+
+Nenhuma informação ou ação existente pode desaparecer.
+
+### MODAIS
+
+Revise todos os modais.
+
+No celular eles não podem:
+
+* ultrapassar a largura da tela;
+* esconder botões;
+* gerar scroll horizontal;
+* ficar atrás da navegação;
+* impedir acesso às ações.
+
+### BOTÕES
+
+Garanta áreas de toque adequadas.
+
+Ações principais, como:
+
+* Salvar;
+* Nova matrícula;
+* Registrar pagamento;
+* Editar;
+* Confirmar;
+
+devem ser fáceis de utilizar pelo celular.
+
+Ações destrutivas como excluir devem continuar exigindo confirmação.
+
+### RESPONSIVIDADE
+
+Revise TODAS as páginas e componentes do sistema, e não somente a página inicial.
+
+Teste aproximadamente nas larguras:
+
+320px
+360px
+375px
+390px
+414px
+768px
+1024px
+Desktop
+
+Evite qualquer scroll horizontal desnecessário.
+
+### IMPORTANTE SOBRE PRODUÇÃO
+
+NÃO faça deploy no Render.
+
+NÃO altere configurações do Render.
+
+NÃO altere o banco de produção.
+
+NÃO faça mudanças irreversíveis.
+
+Faça somente as alterações no projeto importado para que eu possa visualizar e testar primeiro.
+
+### VALIDAÇÃO
+
+Após implementar:
+
+1. Execute o projeto no ambiente de desenvolvimento do Replit.
+2. Verifique erros de compilação.
+3. Verifique erros no console.
+4. Teste navegação.
+5. Teste dashboard.
+6. Teste alunas.
+7. Teste matrícula/cadastro.
+8. Teste turmas.
+9. Teste pagamentos.
+10. Teste formulários e modais.
+11. Teste diferentes larguras de tela.
+12. Confirme que nenhuma funcionalidade existente foi removida.
+
+Não considere a tarefa concluída apenas porque o dashboard ficou responsivo.
+
+Quero TODAS as telas adaptadas para celular.
+
+Ao finalizar, apresente um resumo objetivo contendo:
+
+* quais arquivos foram modificados;
+* quais componentes foram modificados/criados;
+* quais melhorias mobile foram realizadas;
+* quais funcionalidades foram testadas;
+* se encontrou algum problema ou risco;
+* o que recomenda deixar para uma próxima etapa.
+
+Primeiro analise o projeto existente e depois implemente as alterações utilizando a solução de menor risco possível.

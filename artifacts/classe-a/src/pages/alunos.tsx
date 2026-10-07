@@ -109,25 +109,28 @@ export default function Alunos() {
 
   return (
     <Layout>
-      <div className="p-8 max-w-6xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
+      <div className="mx-auto max-w-6xl p-4 sm:p-6 lg:p-8">
+        <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Alunos</h1>
-            <p className="text-sm text-gray-500 mt-1">Gerencie os alunos matriculados</p>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-primary">Cadastros</p>
+            <h1 className="text-2xl font-bold text-gray-900">Alunas</h1>
+            <p className="mt-1 text-sm text-gray-500">Gerencie as alunas matriculadas.</p>
           </div>
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={handleExport} disabled={exporting}>
+          <div className="flex w-full gap-2 sm:w-auto">
+            <Button variant="outline" className="min-w-0 flex-1 sm:flex-none" onClick={handleExport} disabled={exporting}>
               <Download className="w-4 h-4 mr-2" />
-              {exporting ? "Exportando..." : "Exportar Excel"}
+              <span className="hidden sm:inline">{exporting ? "Exportando..." : "Exportar Excel"}</span>
+              <span className="sm:hidden">Exportar</span>
             </Button>
             <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <Button>
+              <Button className="flex-1 sm:flex-none">
                 <Plus className="w-4 h-4 mr-2" />
-                Novo Aluno
+                <span className="hidden sm:inline">Novo Aluno</span>
+                <span className="sm:hidden">Novo</span>
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
+              <DialogContent className="sm:max-w-md">
               <DialogHeader>
                 <DialogTitle>Novo Aluno</DialogTitle>
               </DialogHeader>
@@ -154,6 +157,7 @@ export default function Alunos() {
                   <Label>Nome do Responsável</Label>
                   <Input
                     value={form.nomeResponsavel}
+                    autoComplete="name"
                     onChange={(e) => setForm({ ...form, nomeResponsavel: e.target.value })}
                     placeholder="Nome completo do responsável"
                     required
@@ -163,6 +167,9 @@ export default function Alunos() {
                   <Label>Telefone do Responsável</Label>
                   <Input
                     value={form.telefoneResponsavel}
+                    type="tel"
+                    inputMode="tel"
+                    autoComplete="tel"
                     onChange={(e) => setForm({ ...form, telefoneResponsavel: e.target.value })}
                     placeholder="(11) 99999-9999"
                     required
@@ -198,9 +205,9 @@ export default function Alunos() {
           </div>
         </div>
 
-        <div className="flex gap-3 mb-6">
+        <div className="mb-6 grid grid-cols-1 gap-3 min-[420px]:grid-cols-2">
           <Select value={filtroStatus} onValueChange={(v) => setFiltroStatus(v as "all" | "Ativo" | "Inativo")}>
-            <SelectTrigger className="w-40">
+            <SelectTrigger className="w-full">
               <SelectValue placeholder="Todos os status" />
             </SelectTrigger>
             <SelectContent>
@@ -210,7 +217,7 @@ export default function Alunos() {
             </SelectContent>
           </Select>
           <Select value={filtroTurma} onValueChange={setFiltroTurma}>
-            <SelectTrigger className="w-48">
+            <SelectTrigger className="w-full">
               <SelectValue placeholder="Todas as turmas" />
             </SelectTrigger>
             <SelectContent>
@@ -231,7 +238,8 @@ export default function Alunos() {
             <p className="text-lg">Nenhum aluno encontrado.</p>
           </div>
         ) : (
-          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+          <>
+          <div className="hidden overflow-hidden rounded-xl border border-gray-200 bg-white md:block">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-gray-200 bg-gray-50">
@@ -274,6 +282,29 @@ export default function Alunos() {
               </tbody>
             </table>
           </div>
+          <div className="grid gap-3 md:hidden">
+            {alunos.map((aluno) => (
+              <div key={aluno.id} className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="truncate font-semibold text-gray-900">{aluno.nome}</p>
+                    <p className="mt-1 text-xs text-gray-500">{aluno.turmaDescricao || "Sem turma"}</p>
+                  </div>
+                  <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-medium ${statusColors[aluno.status]}`}>
+                    {aluno.status}
+                  </span>
+                </div>
+                <div className="mt-4 grid grid-cols-2 gap-3 border-t border-gray-100 pt-3 text-xs">
+                  <div><p className="text-gray-400">Responsável</p><p className="mt-1 font-medium text-gray-700">{aluno.nomeResponsavel}</p></div>
+                  <div><p className="text-gray-400">Telefone</p><p className="mt-1 font-medium text-gray-700">{aluno.telefoneResponsavel}</p></div>
+                </div>
+                <Button variant="outline" className="mt-4 w-full" onClick={() => setLocation(`/alunos/${aluno.id}`)}>
+                  <Pencil className="mr-2 h-4 w-4" /> Abrir detalhes
+                </Button>
+              </div>
+            ))}
+          </div>
+          </>
         )}
       </div>
     </Layout>

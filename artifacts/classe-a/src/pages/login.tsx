@@ -22,13 +22,13 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
-      <div className="w-full max-w-sm bg-white rounded-xl shadow-lg border border-gray-100 p-8">
-        <div className="text-center mb-8">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-[#faf9fb] p-4 sm:p-6">
+      <div className="w-full max-w-sm rounded-2xl border border-gray-100 bg-white p-6 shadow-lg sm:p-8">
+        <div className="mb-8 text-center">
           <img
             src="/logo.png"
             alt="Studio Classe A"
-            className="w-28 h-28 object-contain mx-auto mb-3"
+            className="mx-auto mb-3 h-28 w-28 object-contain"
           />
           <h1 className="text-lg font-bold tracking-widest text-gray-700 uppercase">Studio Classe A</h1>
           <p className="text-sm text-gray-400 mt-1">Acesso restrito</p>
@@ -41,6 +41,7 @@ export default function Login() {
               id="email" 
               type="email" 
               placeholder="seu@email.com"
+              autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -51,6 +52,7 @@ export default function Login() {
             <Input 
               id="senha" 
               type="password"
+              autoComplete="current-password"
               value={senha}
               onChange={(e) => setSenha(e.target.value)}
               required

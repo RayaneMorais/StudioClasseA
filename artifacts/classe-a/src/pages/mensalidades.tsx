@@ -194,22 +194,25 @@ export default function Mensalidades() {
 
   return (
     <Layout>
-      <div className="p-8 max-w-7xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
+      <div className="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
+        <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-center sm:justify-between">
           <div>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-primary">Financeiro</p>
             <h1 className="text-2xl font-bold text-gray-900">Mensalidades</h1>
-            <p className="text-sm text-gray-500 mt-1">Controle financeiro mensal dos alunos</p>
+            <p className="mt-1 text-sm text-gray-500">Controle financeiro mensal das alunas.</p>
           </div>
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={handleExportPendentes} disabled={exporting}>
+          <div className="grid grid-cols-3 gap-2 sm:flex">
+            <Button variant="outline" className="min-w-0 px-2 sm:px-4" onClick={handleExportPendentes} disabled={exporting}>
               <Download className="w-4 h-4 mr-2" />
-              {exporting ? "Exportando..." : "Exportar Pendentes"}
+              <span className="hidden sm:inline">{exporting ? "Exportando..." : "Exportar Pendentes"}</span>
+              <span className="sm:hidden">Exportar</span>
             </Button>
             <Dialog open={openMassa} onOpenChange={setOpenMassa}>
               <DialogTrigger asChild>
-                <Button variant="outline">
+                <Button variant="outline" className="min-w-0 px-2 sm:px-4">
                   <RefreshCw className="w-4 h-4 mr-2" />
-                  Gerar em Massa
+                  <span className="hidden sm:inline">Gerar em Massa</span>
+                  <span className="sm:hidden">Gerar</span>
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-sm">
@@ -270,9 +273,10 @@ export default function Mensalidades() {
 
             <Dialog open={openNova} onOpenChange={setOpenNova}>
               <DialogTrigger asChild>
-                <Button>
+              <Button className="min-w-0 px-2 sm:px-4">
                   <Plus className="w-4 h-4 mr-2" />
-                  Nova Mensalidade
+                <span className="hidden sm:inline">Nova Mensalidade</span>
+                <span className="sm:hidden">Nova</span>
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-md">
@@ -379,9 +383,9 @@ export default function Mensalidades() {
           </div>
         </div>
 
-        <div className="flex gap-3 mb-6 flex-wrap">
+        <div className="mb-6 grid grid-cols-2 gap-3 sm:flex sm:flex-wrap">
           <Select value={filtroMes} onValueChange={setFiltroMes}>
-            <SelectTrigger className="w-36">
+            <SelectTrigger className="w-full sm:w-36">
               <SelectValue placeholder="Mês" />
             </SelectTrigger>
             <SelectContent>
@@ -391,7 +395,7 @@ export default function Mensalidades() {
             </SelectContent>
           </Select>
           <Select value={filtroAno} onValueChange={setFiltroAno}>
-            <SelectTrigger className="w-28">
+            <SelectTrigger className="w-full sm:w-28">
               <SelectValue placeholder="Ano" />
             </SelectTrigger>
             <SelectContent>
@@ -399,7 +403,7 @@ export default function Mensalidades() {
             </SelectContent>
           </Select>
           <Select value={filtroStatus} onValueChange={setFiltroStatus}>
-            <SelectTrigger className="w-40">
+            <SelectTrigger className="w-full sm:w-40">
               <SelectValue placeholder="Todos status" />
             </SelectTrigger>
             <SelectContent>
@@ -418,7 +422,8 @@ export default function Mensalidades() {
             <p className="text-sm mt-1">Use "Gerar em Massa" para criar mensalidades do mês.</p>
           </div>
         ) : (
-          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+          <>
+          <div className="hidden overflow-hidden rounded-xl border border-gray-200 bg-white md:block">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-gray-200 bg-gray-50">
@@ -499,6 +504,37 @@ export default function Mensalidades() {
               </tbody>
             </table>
           </div>
+          <div className="grid gap-3 md:hidden">
+            {mensalidades.map((m) => (
+              <div key={m.id} className={`rounded-2xl border bg-white p-4 shadow-sm ${m.status === "Pendente" ? "border-amber-200" : "border-gray-200"}`}>
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="truncate font-semibold text-gray-900">{m.alunoNome}</p>
+                    <p className="mt-1 text-xs text-gray-500">{TIPOS_LABEL[m.tipo]} · {MESES[m.mes - 1]} {m.ano}</p>
+                  </div>
+                  {m.status === "Pago" ? (
+                    <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-800"><CheckCircle className="h-3 w-3" /> Pago</span>
+                  ) : (
+                    <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-yellow-100 px-2.5 py-1 text-xs font-medium text-yellow-800"><Clock className="h-3 w-3" /> Pendente</span>
+                  )}
+                </div>
+                <div className="mt-4 grid grid-cols-2 gap-3 border-t border-gray-100 pt-3 text-xs">
+                  <div><p className="text-gray-400">Vencimento</p><p className="mt-1 font-medium text-gray-700">{formatDate(m.vencimento)}</p></div>
+                  {!isAtendente && <div><p className="text-gray-400">Valor</p><p className="mt-1 font-semibold text-gray-900">{formatBRL(m.valor)}</p></div>}
+                  <div><p className="text-gray-400">Pagamento</p><p className="mt-1 font-medium text-gray-700">{formatDate(m.dataPagamento)}</p></div>
+                </div>
+                {!isAtendente && (
+                  <button className="mt-3 text-xs font-medium text-primary" onClick={() => setEditingValor({ id: m.id, valor: m.valor != null ? String(m.valor) : "" })}>
+                    Editar valor
+                  </button>
+                )}
+                <Button variant="outline" className="mt-3 w-full" onClick={() => handleToggleStatus(m.id, m.status)} disabled={updateMensalidade.isPending}>
+                  {m.status === "Pago" ? "Marcar pendente" : "Registrar pagamento"}
+                </Button>
+              </div>
+            ))}
+          </div>
+          </>
         )}
       </div>
     </Layout>

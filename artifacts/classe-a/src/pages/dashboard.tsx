@@ -121,14 +121,15 @@ export default function Dashboard() {
 
   return (
     <Layout>
-      <div className="p-8 max-w-6xl mx-auto space-y-8">
+      <div className="mx-auto max-w-6xl space-y-6 p-4 sm:p-6 lg:space-y-8 lg:p-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Visão Geral</h1>
-          <p className="text-sm text-gray-500 mt-1">Resumo do mês atual</p>
+          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-primary">Resumo financeiro</p>
+          <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Visão Geral</h1>
+          <p className="mt-1 text-sm text-gray-500">Acompanhe o Studio Classe A neste mês.</p>
         </div>
 
         {/* Row 1: operacional */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 gap-3 min-[360px]:grid-cols-2 sm:gap-5 lg:grid-cols-4">
           <StatCard
             title="Alunos Ativos"
             value={stats.totalAlunosAtivos}
@@ -196,17 +197,17 @@ export default function Dashboard() {
 
         {/* Chart — admin only */}
         {isAdmin && (
-          <div className="bg-white rounded-xl border border-gray-200 p-6">
-            <div className="flex items-center gap-2 mb-6">
+          <div className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-6">
+            <div className="mb-5 flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-primary" />
-              <h2 className="text-base font-semibold text-gray-900">Receita Mensal — últimos 12 meses</h2>
+              <h2 className="text-sm font-semibold text-gray-900 sm:text-base">Receita Mensal — últimos 12 meses</h2>
             </div>
             {receitaMensal.length === 0 ? (
               <div className="h-48 flex items-center justify-center text-gray-400 text-sm">
                 Sem dados suficientes para exibir o gráfico.
               </div>
             ) : (
-              <ResponsiveContainer width="100%" height={280}>
+              <ResponsiveContainer width="100%" height={240}>
                 <BarChart data={receitaMensal} margin={{ top: 4, right: 16, left: 8, bottom: 4 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                   <XAxis dataKey="label" tick={{ fontSize: 12, fill: "#6b7280" }} />

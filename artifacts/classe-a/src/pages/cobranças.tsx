@@ -137,17 +137,19 @@ export default function Cobranças() {
 
   return (
     <Layout>
-      <div className="p-8 max-w-6xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
+      <div className="mx-auto max-w-6xl p-4 sm:p-6 lg:p-8">
+        <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-center sm:justify-between">
           <div>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-primary">Financeiro</p>
             <h1 className="text-2xl font-bold text-gray-900">Cobranças</h1>
-            <p className="text-sm text-gray-500 mt-1">Matrículas, roupas de ballet e outros pagamentos avulsos</p>
+            <p className="mt-1 text-sm text-gray-500">Matrículas, roupas de ballet e outros pagamentos.</p>
           </div>
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <Button className="gap-2">
+              <Button className="w-full gap-2 sm:w-auto">
                 <Plus className="w-4 h-4" />
-                Nova Cobrança
+                <span className="hidden sm:inline">Nova Cobrança</span>
+                <span className="sm:hidden">Nova cobrança</span>
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-md">
@@ -241,9 +243,9 @@ export default function Cobranças() {
           </Dialog>
         </div>
 
-        <div className="flex gap-3 mb-6 flex-wrap">
+        <div className="mb-6 grid grid-cols-2 gap-3 sm:flex sm:flex-wrap">
           <Select value={filtroMes} onValueChange={setFiltroMes}>
-            <SelectTrigger className="w-36">
+            <SelectTrigger className="w-full sm:w-36">
               <SelectValue placeholder="Mês" />
             </SelectTrigger>
             <SelectContent>
@@ -253,7 +255,7 @@ export default function Cobranças() {
             </SelectContent>
           </Select>
           <Select value={filtroAno} onValueChange={setFiltroAno}>
-            <SelectTrigger className="w-28">
+            <SelectTrigger className="w-full sm:w-28">
               <SelectValue placeholder="Ano" />
             </SelectTrigger>
             <SelectContent>
@@ -261,7 +263,7 @@ export default function Cobranças() {
             </SelectContent>
           </Select>
           <Select value={filtroTipo} onValueChange={setFiltroTipo}>
-            <SelectTrigger className="w-44">
+            <SelectTrigger className="w-full sm:w-44">
               <SelectValue placeholder="Todos os tipos" />
             </SelectTrigger>
             <SelectContent>
@@ -272,7 +274,7 @@ export default function Cobranças() {
             </SelectContent>
           </Select>
           <Select value={filtroStatus} onValueChange={setFiltroStatus}>
-            <SelectTrigger className="w-40">
+            <SelectTrigger className="w-full sm:w-40">
               <SelectValue placeholder="Todos status" />
             </SelectTrigger>
             <SelectContent>
@@ -291,7 +293,8 @@ export default function Cobranças() {
             <p className="text-sm mt-1">Use "Nova Cobrança" para registrar matrículas, roupas ou outros pagamentos.</p>
           </div>
         ) : (
-          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+          <>
+          <div className="hidden overflow-hidden rounded-xl border border-gray-200 bg-white md:block">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-gray-200 bg-gray-50">
@@ -349,6 +352,33 @@ export default function Cobranças() {
               </tbody>
             </table>
           </div>
+          <div className="grid gap-3 md:hidden">
+            {cobrançasFiltradas.map((c) => (
+              <div key={c.id} className={`rounded-2xl border bg-white p-4 shadow-sm ${c.status === "Pendente" ? "border-amber-200" : "border-gray-200"}`}>
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="truncate font-semibold text-gray-900">{c.alunoNome}</p>
+                    <p className="mt-1 text-xs text-gray-500">{TIPO_LABEL[c.tipo] ?? c.tipo} · {MESES[c.mes - 1]} {c.ano}</p>
+                  </div>
+                  {c.status === "Pago" ? (
+                    <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-800"><CheckCircle className="h-3 w-3" /> Pago</span>
+                  ) : (
+                    <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-yellow-100 px-2.5 py-1 text-xs font-medium text-yellow-800"><Clock className="h-3 w-3" /> Pendente</span>
+                  )}
+                </div>
+                {c.descricao && <p className="mt-3 text-sm text-gray-600">{c.descricao}</p>}
+                <div className="mt-4 grid grid-cols-2 gap-3 border-t border-gray-100 pt-3 text-xs">
+                  <div><p className="text-gray-400">Vencimento</p><p className="mt-1 font-medium text-gray-700">{formatDate(c.vencimento)}</p></div>
+                  {!isAtendente && <div><p className="text-gray-400">Valor</p><p className="mt-1 font-semibold text-gray-900">{formatBRL(c.valor)}</p></div>}
+                  <div><p className="text-gray-400">Pagamento</p><p className="mt-1 font-medium text-gray-700">{formatDate(c.dataPagamento)}</p></div>
+                </div>
+                <Button variant="outline" className="mt-4 w-full" onClick={() => handleToggleStatus(c.id, c.status)} disabled={updateCobrança.isPending}>
+                  {c.status === "Pago" ? "Marcar pendente" : "Registrar pagamento"}
+                </Button>
+              </div>
+            ))}
+          </div>
+          </>
         )}
       </div>
     </Layout>

@@ -64,17 +64,19 @@ export default function Turmas() {
 
   return (
     <Layout>
-      <div className="p-8 max-w-6xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
+      <div className="mx-auto max-w-6xl p-4 sm:p-6 lg:p-8">
+        <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-center sm:justify-between">
           <div>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-primary">Organização</p>
             <h1 className="text-2xl font-bold text-gray-900">Turmas</h1>
-            <p className="text-sm text-gray-500 mt-1">Gerencie as turmas da escola</p>
+            <p className="mt-1 text-sm text-gray-500">Gerencie as turmas da escola.</p>
           </div>
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <Button>
+              <Button className="w-full sm:w-auto">
                 <Plus className="w-4 h-4 mr-2" />
-                Nova Turma
+                <span className="hidden sm:inline">Nova Turma</span>
+                <span className="sm:hidden">Nova turma</span>
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">
@@ -157,7 +159,8 @@ export default function Turmas() {
             <p className="text-sm mt-1">Clique em "Nova Turma" para começar.</p>
           </div>
         ) : (
-          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+          <>
+          <div className="hidden overflow-hidden rounded-xl border border-gray-200 bg-white md:block">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-gray-200 bg-gray-50">
@@ -197,6 +200,29 @@ export default function Turmas() {
               </tbody>
             </table>
           </div>
+          <div className="grid gap-3 md:hidden">
+            {turmas.map((turma) => (
+              <div key={turma.id} className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="font-semibold text-gray-900">{turma.nome}</p>
+                    <p className="mt-1 text-sm text-gray-500">{turma.professor}</p>
+                  </div>
+                  <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-medium ${statusColors[turma.status]}`}>
+                    {turma.status}
+                  </span>
+                </div>
+                <div className="mt-4 grid grid-cols-2 gap-3 border-t border-gray-100 pt-3 text-xs">
+                  <div><p className="text-gray-400">Dias</p><p className="mt-1 font-medium text-gray-700">{turma.diasSemana}</p></div>
+                  <div><p className="text-gray-400">Horário</p><p className="mt-1 font-medium text-gray-700">{turma.horario}</p></div>
+                </div>
+                <Button variant="outline" className="mt-4 w-full" onClick={() => setLocation(`/turmas/${turma.id}`)}>
+                  <Pencil className="mr-2 h-4 w-4" /> Abrir detalhes
+                </Button>
+              </div>
+            ))}
+          </div>
+          </>
         )}
       </div>
     </Layout>
