@@ -1,0 +1,1 @@
+- [External database](external-database.md) — Use the repository schema as the intended contract; Replit-managed DB results do not prove external DB contents.
