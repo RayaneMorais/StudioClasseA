@@ -34,7 +34,7 @@ Sistema interno para escola de ballet com controle de alunos, turmas e mensalida
 
 - Session-based authentication using express-session + connect-pg-simple (sessions stored in DB)
 - Sessions table created manually via SQL (connect-pg-simple's `createTableIfMissing` fails when bundled with esbuild)
-- No public registration — admin users created manually via SQL
+- No public account registration — admin users are created manually via SQL. Online enrollment is a separate pending-request flow; only an administrator's approval creates an active student.
 - No deletion of students or classes — only status deactivation
 - Vencimento sempre fixo no dia 10 de cada mês
 

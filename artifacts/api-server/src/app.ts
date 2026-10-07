@@ -68,6 +68,20 @@ app.use(
 );
 
 app.use("/api", router);
+app.use("/api", (error: any, req: any, res: any, _next: any) => {
+  const status = Number(error?.status ?? error?.statusCode);
+  if (error?.type === "entity.too.large" || status === 413) {
+    res.status(413).json({ error: "A solicitação excede o tamanho permitido." });
+    return;
+  }
+  if (error?.type === "entity.parse.failed" || status === 400) {
+    res.status(400).json({ error: "O corpo da solicitação é inválido." });
+    return;
+  }
+
+  req.log?.error({ error: { message: error?.message } }, "API request failed");
+  res.status(500).json({ error: "Não foi possível concluir a solicitação." });
+});
 
 if (isProd) {
   const frontendDist = path.resolve(process.cwd(), "artifacts/classe-a/dist/public");

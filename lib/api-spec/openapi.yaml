@@ -20,8 +20,219 @@ tags:
     description: Monthly payment management
   - name: dashboard
     description: Dashboard statistics
+  - name: matriculas-online
+    description: Matrículas online públicas e análise administrativa
 
 paths:
+  /public/matriculas-online/opcoes:
+    get:
+      operationId: getOpcoesMatriculaOnline
+      tags: [matriculas-online]
+      summary: Get public class choices for the enrollment form
+      responses:
+        "200":
+          description: Public class options without internal identifiers
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OpcoesMatriculaOnline"
+
+  /public/matriculas-online/solicitacoes:
+    post:
+      operationId: criarSolicitacaoMatriculaOnline
+      tags: [matriculas-online]
+      summary: Submit a public enrollment request without creating an active student
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NovaSolicitacaoMatriculaOnline"
+      responses:
+        "201":
+          description: Request received
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProtocoloMatriculaOnline"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /admin/matriculas-online/resumo:
+    get:
+      operationId: getResumoMatriculaOnline
+      tags: [matriculas-online]
+      summary: Get pending enrollment request count (authenticated administrator)
+      responses:
+        "200":
+          description: Pending request count
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResumoMatriculaOnline"
+        "401":
+          description: Not authenticated or not an administrator
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Authenticated user is not an administrator
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /admin/matriculas-online/solicitacoes:
+    get:
+      operationId: listarSolicitacoesMatriculaOnline
+      tags: [matriculas-online]
+      summary: List enrollment requests (authenticated administrator)
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [Pendente, Aprovada, Rejeitada]
+      responses:
+        "200":
+          description: Enrollment requests
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SolicitacaoMatriculaOnline"
+        "401":
+          description: Not authenticated or not an administrator
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Authenticated user is not an administrator
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /admin/matriculas-online/solicitacoes/{id}/aprovar:
+    post:
+      operationId: aprovarSolicitacaoMatriculaOnline
+      tags: [matriculas-online]
+      summary: Approve a request and create an active student (administrator only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AprovarSolicitacaoMatriculaOnline"
+      responses:
+        "200":
+          description: Request approved and student created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResultadoAprovacaoMatriculaOnline"
+        "400":
+          description: Invalid class or request state
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Not authenticated or not an administrator
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Authenticated user is not an administrator
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Request not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Possible duplicate needs administrator review
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DuplicidadesMatriculaOnline"
+
+  /admin/matriculas-online/solicitacoes/{id}/rejeitar:
+    post:
+      operationId: rejeitarSolicitacaoMatriculaOnline
+      tags: [matriculas-online]
+      summary: Reject a request without deleting its data (administrator only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RejeitarSolicitacaoMatriculaOnline"
+      responses:
+        "200":
+          description: Request rejected
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SolicitacaoMatriculaOnline"
+        "400":
+          description: Request is not pending
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Not authenticated or not an administrator
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Authenticated user is not an administrator
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Request not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /healthz:
     get:
       operationId: healthCheck
@@ -510,6 +721,169 @@ components:
           type: string
         role:
           type: string
+
+    OpcoesMatriculaOnline:
+      type: object
+      required: [opcoes]
+      properties:
+        opcoes:
+          type: array
+          items:
+            $ref: "#/components/schemas/OpcaoTurmaPublica"
+
+    OpcaoTurmaPublica:
+      type: object
+      required: [valor, rotulo]
+      properties:
+        valor:
+          type: string
+          maxLength: 200
+        rotulo:
+          type: string
+          maxLength: 200
+
+    NovaSolicitacaoMatriculaOnline:
+      type: object
+      additionalProperties: false
+      required: [nome, dataNascimento, nomeResponsavel, telefoneResponsavel, turmaInteresse, consentimento]
+      properties:
+        nome:
+          type: string
+          minLength: 2
+          maxLength: 120
+        dataNascimento:
+          type: string
+          format: date
+        nomeResponsavel:
+          type: string
+          minLength: 2
+          maxLength: 120
+        telefoneResponsavel:
+          type: string
+          minLength: 10
+          maxLength: 24
+        turmaInteresse:
+          type: string
+          minLength: 2
+          maxLength: 200
+        consentimento:
+          type: boolean
+          const: true
+        website:
+          type: string
+          maxLength: 200
+
+    ProtocoloMatriculaOnline:
+      type: object
+      required: [protocolo]
+      properties:
+        protocolo:
+          type: string
+
+    ResumoMatriculaOnline:
+      type: object
+      required: [pendentes]
+      properties:
+        pendentes:
+          type: integer
+          minimum: 0
+
+    SolicitacaoMatriculaOnline:
+      type: object
+      required: [id, protocolo, nome, dataNascimento, nomeResponsavel, telefoneResponsavel, turmaInteresse, consentimentoEm, status, createdAt]
+      properties:
+        id:
+          type: integer
+        protocolo:
+          type: string
+        nome:
+          type: string
+        dataNascimento:
+          type: string
+          format: date
+        nomeResponsavel:
+          type: string
+        telefoneResponsavel:
+          type: string
+        turmaInteresse:
+          type: string
+        consentimentoEm:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [Pendente, Aprovada, Rejeitada]
+        motivoRejeicao:
+          type: ["string", "null"]
+        decididoEm:
+          type: ["string", "null"]
+          format: date-time
+        alunoCriadoId:
+          type: ["integer", "null"]
+        createdAt:
+          type: string
+          format: date-time
+
+    AprovarSolicitacaoMatriculaOnline:
+      type: object
+      additionalProperties: false
+      required: [turmaId]
+      properties:
+        turmaId:
+          type: integer
+          minimum: 1
+        confirmarPossivelDuplicidade:
+          type: boolean
+
+    RejeitarSolicitacaoMatriculaOnline:
+      type: object
+      additionalProperties: false
+      properties:
+        motivo:
+          type: string
+          maxLength: 500
+
+    PossivelDuplicidadeMatriculaOnline:
+      type: object
+      required: [id, nome, dataNascimento, nomeResponsavel, telefoneResponsavel, turmaDescricao, status]
+      properties:
+        id:
+          type: integer
+        nome:
+          type: string
+        dataNascimento:
+          type: string
+          format: date
+        nomeResponsavel:
+          type: string
+        telefoneResponsavel:
+          type: string
+        turmaDescricao:
+          type: ["string", "null"]
+        status:
+          type: string
+          enum: [Ativo, Inativo]
+
+    DuplicidadesMatriculaOnline:
+      type: object
+      required: [error, possiveisDuplicados]
+      properties:
+        error:
+          type: string
+          const: possible_duplicate
+        possiveisDuplicados:
+          type: array
+          items:
+            $ref: "#/components/schemas/PossivelDuplicidadeMatriculaOnline"
+
+    ResultadoAprovacaoMatriculaOnline:
+      type: object
+      required: [solicitacao, alunoId]
+      properties:
+        solicitacao:
+          $ref: "#/components/schemas/SolicitacaoMatriculaOnline"
+        alunoId:
+          type: integer
 
     Turma:
       type: object

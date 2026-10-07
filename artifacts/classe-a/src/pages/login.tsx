@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLogin } from "@workspace/api-client-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,13 +10,15 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [_, setLocation] = useLocation();
-  
+  const queryClient = useQueryClient();
+
   const loginMutation = useLogin();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     loginMutation.mutate({ data: { email, senha } }, {
       onSuccess: () => {
+        queryClient.clear();
         setLocation("/dashboard");
       }
     });

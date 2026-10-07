@@ -1,0 +1,437 @@
+Quero implementar no sistema existente do **Studio de Dança Classe A** uma funcionalidade de **Matrícula Online Pública**, permitindo que pais ou responsáveis realizem a solicitação de matrícula de suas filhas pelo celular, SEM necessidade de criar login e senha.
+
+IMPORTANTE: o sistema já está funcionando e possui cadastro de alunas, responsáveis, turmas e demais funcionalidades administrativas.
+
+NÃO quero recriar o cadastro atual.
+
+A nova funcionalidade deve aproveitar ao máximo a estrutura, regras, componentes, validações e dados que já existem.
+
+## 1. ANTES DE IMPLEMENTAR
+
+Primeiro analise o projeto atual e identifique:
+
+- Como funciona atualmente o cadastro/matrícula de uma aluna.
+- Quais tabelas e entidades participam desse processo.
+- Quais campos existem para aluna.
+- Quais campos existem para responsável.
+- Como funciona a associação entre responsável e aluna.
+- Como funciona a associação entre aluna e turma.
+- Quais campos são obrigatórios.
+- Quais validações já existem.
+- Quais campos são administrativos/internos.
+- Como funciona atualmente a criação de matrícula.
+- Como são tratados status de matrícula/aluna.
+- Se já existe conceito de matrícula pendente, pré-matrícula ou equivalente.
+- Como funciona a autenticação e autorização das APIs.
+
+Somente depois dessa análise implemente a solução.
+
+Priorize reutilizar a arquitetura existente.
+
+NÃO crie tabelas duplicadas se a estrutura atual puder ser reutilizada com segurança.
+
+Caso seja necessária alteração de banco de dados, faça somente a alteração mínima necessária e explique ao final o que foi criado/modificado.
+
+## 2. OBJETIVO
+
+Criar uma página pública de matrícula, acessível SEM LOGIN.
+
+Exemplo de rota:
+
+/matricula
+
+Essa rota deverá poder ser acessada diretamente pelo navegador do celular.
+
+IMPORTANTE:
+
+Somente essa funcionalidade deve ser pública.
+
+NÃO remover autenticação das telas administrativas.
+
+NÃO permitir que usuários não autenticados acessem:
+
+- lista de alunas;
+- dados de outras alunas;
+- responsáveis cadastrados;
+- pagamentos;
+- mensalidades;
+- dashboard;
+- turmas administrativas;
+- usuários;
+- relatórios;
+- configurações;
+- qualquer outra informação interna.
+
+A rota pública deverá permitir somente:
+
+1. carregar as informações estritamente necessárias ao formulário;
+2. enviar uma nova solicitação de matrícula.
+
+## 3. EXPERIÊNCIA MOBILE-FIRST
+
+A página deverá ser criada pensando principalmente no celular.
+
+Quero uma aparência elegante, simples e profissional, mantendo a identidade visual do Studio Classe A:
+
+- preto;
+- rosa;
+- branco;
+- identidade relacionada ao ballet;
+- layout delicado e moderno.
+
+A página deverá ser totalmente responsiva.
+
+No topo:
+
+Logo/identidade do Studio Classe A
+
+Título:
+
+"Matrícula Online"
+
+Texto:
+
+"Preencha os dados abaixo para solicitar a matrícula. Após o envio, o Studio Classe A analisará as informações e entrará em contato para confirmação."
+
+## 4. FORMULÁRIO
+
+NÃO invente inicialmente um conjunto completamente novo de campos.
+
+Analise o formulário de cadastro/matrícula existente e reaproveite os campos adequados para preenchimento pelo responsável.
+
+Separe visualmente o formulário em etapas ou seções para facilitar o preenchimento pelo celular.
+
+Sugestão:
+
+### Etapa 1 — Dados da aluna
+
+Utilizar os campos existentes adequados, como por exemplo:
+
+- Nome completo
+- Data de nascimento
+- CPF, se aplicável
+- demais dados pessoais que já sejam necessários no cadastro atual
+
+### Etapa 2 — Dados do responsável
+
+Utilizar os campos existentes adequados, como:
+
+- Nome do responsável
+- CPF
+- Telefone/WhatsApp
+- E-mail
+- Grau de parentesco
+
+Utilize somente campos que façam sentido de acordo com o modelo atual do sistema.
+
+### Etapa 3 — Endereço
+
+Se o sistema atualmente utiliza endereço no cadastro, permitir o preenchimento dos campos necessários.
+
+Caso exista integração/consulta de CEP, reutilize-a.
+
+### Etapa 4 — Interesse na matrícula
+
+Permitir informar a modalidade/turma pretendida somente se isso puder ser feito de maneira segura utilizando a estrutura atual.
+
+Se as turmas puderem ser apresentadas publicamente, a API pública deverá retornar SOMENTE informações necessárias para seleção, como:
+
+- nome;
+- modalidade;
+- faixa etária, se existir;
+- dias;
+- horários;
+- vagas, somente se essa informação já existir e for apropriada.
+
+NÃO expor IDs internos desnecessariamente ou outras informações administrativas.
+
+Caso seja melhor para a arquitetura atual, permitir apenas "Turma/Modalidade de interesse", deixando a definição final para o Studio.
+
+### Etapa 5 — Informações adicionais
+
+Reaproveitar informações relevantes existentes no cadastro atual que façam sentido para os responsáveis preencherem.
+
+NÃO mostrar campos administrativos ou internos.
+
+## 5. NÃO EFETIVAR A MATRÍCULA AUTOMATICAMENTE
+
+Este requisito é muito importante.
+
+O envio do formulário público NÃO deve transformar automaticamente a pessoa em uma aluna matriculada/ativa, a menos que a arquitetura existente exija outra abordagem e isso seja claramente explicado antes.
+
+O fluxo desejado é:
+
+Responsável preenche formulário
+→
+Solicitação recebida
+→
+Status "Pendente de aprovação"
+→
+Studio analisa
+→
+Studio aprova
+→
+Matrícula/aluna é efetivada
+
+Criar ou reutilizar um status equivalente a:
+
+PENDENTE_APROVACAO
+
+Não incluir automaticamente essa matrícula nos indicadores de alunas ativas caso isso distorça os números atuais.
+
+## 6. ÁREA ADMINISTRATIVA — SOLICITAÇÕES
+
+Adicionar no sistema administrativo uma forma simples de visualizar as solicitações recebidas.
+
+Por exemplo:
+
+"Matrículas Online"
+
+ou
+
+"Solicitações de Matrícula"
+
+Exibir indicador de quantidade pendente:
+
+Matrículas pendentes: 3
+
+Ao abrir, permitir visualizar:
+
+- dados da aluna;
+- responsável;
+- contato;
+- turma/modalidade pretendida;
+- data da solicitação;
+- status.
+
+Adicionar ações:
+
+[ Aprovar matrícula ]
+
+[ Rejeitar ]
+
+Se fizer sentido:
+
+[ Editar antes de aprovar ]
+
+## 7. APROVAÇÃO
+
+Ao selecionar "Aprovar matrícula":
+
+Reutilizar o processo de cadastro/matrícula já existente no sistema.
+
+NÃO criar um segundo processo paralelo se o sistema atual já possui regras para criar aluna, responsável e matrícula.
+
+A aprovação deve:
+
+- validar os dados;
+- verificar duplicidades;
+- aproveitar responsável existente quando apropriado;
+- criar/atualizar a aluna conforme as regras atuais;
+- criar a matrícula;
+- associar turma quando aplicável;
+- manter integridade dos relacionamentos;
+- registrar que a origem foi "Matrícula Online", se isso puder ser implementado de forma simples e útil.
+
+Antes de efetivar, mostrar confirmação ao usuário administrativo.
+
+## 8. PREVENÇÃO DE DUPLICIDADE
+
+Antes da aprovação, verificar possíveis registros existentes.
+
+Utilizar principalmente identificadores confiáveis existentes no sistema, como CPF da aluna e/ou CPF do responsável, conforme o modelo atual.
+
+Também poderá utilizar e-mail/telefone como alerta secundário, mas NÃO considere duas pessoas automaticamente iguais apenas porque possuem telefone ou e-mail semelhante.
+
+Caso exista possível duplicidade, NÃO criar automaticamente outro registro.
+
+Mostrar ao administrador algo como:
+
+"Encontramos um possível cadastro existente."
+
+Permitir analisar antes de continuar.
+
+## 9. REJEIÇÃO
+
+Ao rejeitar uma solicitação:
+
+Solicitar confirmação.
+
+Se possível, permitir registrar um motivo interno opcional.
+
+Alterar o status para:
+
+REJEITADA
+
+Não excluir imediatamente os dados da solicitação.
+
+Registrar data da decisão.
+
+## 10. CONFIRMAÇÃO PARA O RESPONSÁVEL
+
+Depois que o formulário for enviado corretamente, mostrar uma página/tela de sucesso.
+
+Exemplo:
+
+"Matrícula enviada com sucesso! 🩰"
+
+"Recebemos sua solicitação de matrícula no Studio Classe A."
+
+"Nossa equipe analisará as informações e entrará em contato para confirmar a matrícula."
+
+"Você não precisa enviar o formulário novamente."
+
+Adicionar botão:
+
+[ Finalizar ]
+
+NÃO mostrar informações administrativas.
+
+## 11. PROTOCOLO
+
+Se for simples dentro da arquitetura existente, gerar um número/código público da solicitação.
+
+Exemplo:
+
+CLA-2026-000123
+
+Mostrar na confirmação:
+
+"Protocolo: CLA-2026-000123"
+
+O protocolo NÃO pode permitir enumerar ou consultar dados de outras solicitações.
+
+Neste momento NÃO é necessário criar uma consulta pública de protocolo.
+
+## 12. SEGURANÇA — MUITO IMPORTANTE
+
+A funcionalidade será pública, portanto trate segurança como requisito obrigatório.
+
+Implementar:
+
+- validação no frontend;
+- validação novamente no backend;
+- sanitização dos dados;
+- limites de tamanho;
+- proteção contra payloads inesperados;
+- rate limiting no endpoint público;
+- proteção contra submissões automatizadas/spam adequada à stack atual;
+- mensagens de erro que não revelem detalhes internos;
+- tratamento seguro de exceções.
+
+NUNCA confiar apenas na validação frontend.
+
+NÃO expor:
+
+- dados de outras alunas;
+- responsáveis existentes;
+- usuários;
+- senhas;
+- tokens;
+- secrets;
+- queries;
+- stack traces;
+- informações internas do banco.
+
+Revise cuidadosamente os endpoints públicos.
+
+Uma pessoa sem autenticação NÃO pode alterar uma solicitação depois do envio através de endpoints administrativos.
+
+## 13. LGPD E PRIVACIDADE
+
+Como o formulário coleta dados pessoais e dados de criança/adolescente, incluir antes do envio uma confirmação de ciência/consentimento adequada à finalidade do cadastro.
+
+Exemplo:
+
+"Declaro que sou responsável legal ou estou autorizado(a) a fornecer estes dados e concordo com seu uso pelo Studio Classe A para fins de matrícula, contato e prestação dos serviços relacionados."
+
+[ ] Li e concordo.
+
+O checkbox deve ser obrigatório.
+
+Não adicionar consentimentos genéricos para marketing.
+
+Se o projeto já possuir Política de Privacidade, adicionar link para ela.
+
+Caso não exista, apenas deixe a estrutura preparada e informe isso no relatório final; NÃO invente uma política jurídica completa.
+
+Colete somente dados necessários para o processo.
+
+## 14. NÃO ALTERAR O SISTEMA EXISTENTE DESNECESSARIAMENTE
+
+Não:
+
+- recriar o projeto;
+- trocar banco;
+- trocar framework;
+- alterar autenticação existente;
+- remover funcionalidades;
+- alterar regras financeiras;
+- modificar pagamentos;
+- alterar configurações do Render;
+- realizar deploy em produção;
+- alterar secrets;
+- quebrar a responsividade já implementada.
+
+Esta funcionalidade deve ser adicionada à aplicação existente.
+
+## 15. TESTES
+
+Após implementar, testar:
+
+- acesso /matricula sem login;
+- funcionamento pelo celular;
+- campos obrigatórios;
+- validações;
+- envio válido;
+- envio inválido;
+- proteção dos endpoints;
+- tentativa de acessar telas administrativas sem login;
+- criação da solicitação;
+- visualização pelo administrador;
+- aprovação;
+- rejeição;
+- possível duplicidade;
+- associação correta entre responsável/aluna/matrícula;
+- comportamento em caso de erro;
+- layout em 320px, 360px, 390px e 414px;
+- desktop;
+- funcionamento das telas administrativas existentes.
+
+Verifique também console, logs e erros de compilação.
+
+## 16. NÃO FAZER DEPLOY
+
+Implemente e teste no ambiente atual do Replit.
+
+NÃO publique no Render.
+
+NÃO faça alteração diretamente no ambiente de produção.
+
+Quero revisar e testar a funcionalidade antes da publicação.
+
+## 17. RELATÓRIO FINAL
+
+Ao terminar, informe claramente:
+
+1. Como era o fluxo de matrícula existente que você encontrou.
+2. Qual arquitetura utilizou para a matrícula pública.
+3. Quais arquivos foram modificados.
+4. Se houve alteração no banco de dados.
+5. Quais tabelas/colunas foram adicionadas ou modificadas.
+6. Quais endpoints públicos foram criados.
+7. Quais endpoints permanecem protegidos.
+8. Como funciona a aprovação.
+9. Como funciona a prevenção de duplicidades.
+10. Quais medidas de segurança foram adicionadas.
+11. Quais testes foram realizados.
+12. Se existe alguma migração de banco que precisará ser executada posteriormente no ambiente de produção.
+13. Se existe algum risco antes da publicação.
+
+Não considere a tarefa concluída apenas porque o formulário público está visualmente funcionando.
+
+A funcionalidade só estará concluída quando o fluxo completo:
+
+FORMULÁRIO PÚBLICO → SOLICITAÇÃO PENDENTE → ANÁLISE ADMINISTRATIVA → APROVAÇÃO → MATRÍCULA
+
+estiver funcionando corretamente e de maneira segura.

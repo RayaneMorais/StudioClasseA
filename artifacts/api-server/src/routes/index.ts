@@ -5,8 +5,12 @@ import turmasRouter from "./turmas";
 import alunosRouter from "./alunos";
 import mensalidadesRouter from "./mensalidades";
 import dashboardRouter from "./dashboard";
+import matriculasOnlinePublicRouter from "./matriculas-online-public";
+import matriculasOnlineAdminRouter from "./matriculas-online-admin";
 
 const router: IRouter = Router();
+
+router.use("/public", matriculasOnlinePublicRouter);
 
 const requireAuth = (req: any, res: any, next: any) => {
   const publicPaths = ["/auth/login", "/auth/logout", "/healthz"];
@@ -22,5 +26,6 @@ router.use(turmasRouter);
 router.use(alunosRouter);
 router.use(mensalidadesRouter);
 router.use(dashboardRouter);
+router.use(matriculasOnlineAdminRouter);
 
 export default router;

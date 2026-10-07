@@ -1,5 +1,6 @@
 import { Link, useLocation } from "wouter";
-import { Users, GraduationCap, CreditCard, LogOut, LayoutDashboard, Receipt, Menu } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { Users, GraduationCap, CreditCard, LogOut, LayoutDashboard, Receipt, Menu, ClipboardList } from "lucide-react";
 import { useLogout, useGetMe } from "@workspace/api-client-react";
 import { Button } from "./ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
@@ -15,11 +16,15 @@ const navItems = [
 export function Layout({ children }: { children: React.ReactNode }) {
   const [location, setLocation] = useLocation();
   const { data: user } = useGetMe();
+  const queryClient = useQueryClient();
   const logout = useLogout();
 
   const handleLogout = () => {
     logout.mutate(undefined, {
-      onSuccess: () => setLocation("/login"),
+      onSuccess: () => {
+        queryClient.clear();
+        setLocation("/login");
+      },
     });
   };
 
@@ -48,6 +53,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </Link>
     );
   };
+  const adminItem = { href: "/matriculas-online", label: "Matrículas online", desktopLabel: "Matrículas online", icon: ClipboardList };
+  const currentNavItems = user?.role === "admin" ? [...navItems, adminItem] : navItems;
 
   return (
     <div className="flex min-h-screen bg-[#faf9fb]">
@@ -56,7 +63,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           <img src="/logo.png" alt="Studio Classe A" className="h-28 w-28 object-contain" />
           <p className="text-xs font-medium uppercase tracking-[0.22em] text-gray-400">Studio Classe A</p>
         </div>
-        <nav className="flex-1 space-y-1 overflow-y-auto p-4">{navItems.map((item) => renderNavItem(item))}</nav>
+        <nav className="flex-1 space-y-1 overflow-y-auto p-4">{currentNavItems.map((item) => renderNavItem(item))}</nav>
         <div className="border-t border-gray-200 p-4">
           <div className="mb-4 px-3">
             <p className="truncate text-sm font-medium text-gray-900">{user?.nome}</p>
@@ -76,7 +83,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             <div>
               <p className="text-sm font-semibold leading-none text-gray-900">Studio Classe A</p>
               <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-gray-400">
-                {navItems.find((item) => location.startsWith(item.href))?.label ?? "Sistema"}
+                {currentNavItems.find((item) => location.startsWith(item.href))?.label ?? "Sistema"}
               </p>
             </div>
           </div>
@@ -89,6 +96,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             <SheetContent side="right" className="w-[min(85vw,20rem)]">
               <div className="mt-8 flex flex-col gap-1">
                 {navItems.map((item) => renderNavItem(item))}
+                {user?.role === "admin" && renderNavItem(adminItem)}
                 <div className="mt-4 border-t pt-4">
                   <p className="px-3 text-sm font-medium text-gray-900">{user?.nome}</p>
                   <p className="px-3 text-xs text-gray-500">{user?.email}</p>

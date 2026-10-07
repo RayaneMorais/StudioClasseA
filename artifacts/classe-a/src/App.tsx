@@ -14,6 +14,8 @@ import Alunos from "./pages/alunos";
 import AlunoDetalhe from "./pages/aluno-detalhe";
 import Mensalidades from "./pages/mensalidades";
 import Cobranças from "./pages/cobranças";
+import MatriculaOnline from "./pages/matricula-online";
+import MatriculasOnlineAdmin from "./pages/matriculas-online-admin";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -29,6 +31,7 @@ function ProtectedRoute({ component: Component, ...rest }: { component: React.Co
 
   useEffect(() => {
     if (!isLoading && (error || !user)) {
+      queryClient.clear();
       setLocation("/login");
     }
   }, [user, isLoading, error, setLocation]);
@@ -46,10 +49,34 @@ function ProtectedRoute({ component: Component, ...rest }: { component: React.Co
   return <Component {...rest} />;
 }
 
+function AdminRoute({ component: Component }: { component: React.ComponentType<any> }) {
+  const { data: user, isLoading, error } = useGetMe({ query: { retry: false, queryKey: getGetMeQueryKey() } });
+  const [_, setLocation] = useLocation();
+
+  useEffect(() => {
+    if (!isLoading && (error || !user)) {
+      queryClient.clear();
+      setLocation("/login");
+    } else if (!isLoading && user && user.role !== "admin") {
+      queryClient.clear();
+      setLocation("/dashboard");
+    }
+  }, [user, isLoading, error, setLocation]);
+
+  if (isLoading || !user || user.role !== "admin") {
+    return <div className="flex min-h-[100dvh] items-center justify-center bg-background text-sm text-muted-foreground">Verificando acesso...</div>;
+  }
+  return <Component />;
+}
+
 function Router() {
   return (
     <Switch>
+      <Route path="/matricula" component={MatriculaOnline} />
       <Route path="/login" component={Login} />
+      <Route path="/matriculas-online">
+        <AdminRoute component={MatriculasOnlineAdmin} />
+      </Route>
       <Route path="/dashboard">
         <ProtectedRoute component={Dashboard} />
       </Route>
