@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useLogin } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useLocation } from "wouter";
+import { Link, useLocation } from "wouter";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -74,6 +75,18 @@ export default function Login() {
             <p className="text-sm text-red-500 text-center mt-2">Credenciais inválidas</p>
           )}
         </form>
+
+        <div className="mt-6 border-t border-gray-100 pt-5 text-center">
+          <p className="text-sm text-gray-500">Ainda não conhece o Studio?</p>
+          <Link
+            href="/matricula"
+            className="mt-2 inline-flex min-h-11 items-center justify-center gap-2 rounded-lg px-3 text-sm font-semibold text-primary transition-colors hover:bg-primary/5 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            data-testid="link-public-enrollment"
+          >
+            Conheça nossas aulas e manifeste seu interesse
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
+        </div>
       </div>
     </div>
   );
